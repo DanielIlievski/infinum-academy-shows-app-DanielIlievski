@@ -1,19 +1,17 @@
 package com.example.infinite_movies
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.infinite_movies.databinding.ActivityLoginBinding
-import com.example.infinite_movies.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class LoginActivity: AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-
+        binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 }
