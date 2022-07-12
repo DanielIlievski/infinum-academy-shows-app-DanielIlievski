@@ -14,7 +14,7 @@
         android:theme="@style/Theme.ShowsDanielIlievski"
         tools:targetApi="31">
         <activity
-            android:name="com.example.infinite_movies.com.infinite_movies.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
