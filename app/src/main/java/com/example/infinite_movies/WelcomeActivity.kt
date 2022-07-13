@@ -16,6 +16,6 @@ class WelcomeActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.welcomeText.text = "Welcome " + intent.extras?.getString("EMAIL")
+        binding.welcomeText.text = "Welcome " + intent.extras?.getString("EXTRA_EMAIL")
     }
 }

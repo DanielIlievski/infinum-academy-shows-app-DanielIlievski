@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import com.example.infinite_movies.databinding.ActivityLoginBinding
-import com.google.android.material.textfield.TextInputLayout
 import java.util.regex.Pattern
 
 
@@ -109,8 +108,18 @@ class LoginActivity : AppCompatActivity() {
             val username = binding.emailTextField.editText?.text.toString()
                 .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
 
-            intent.putExtra("EMAIL", username)
+            intent.putExtra("EXTRA_EMAIL", username)
             startActivity(intent)
+
+
+            /* Starting WelcomeActivity.kt with an implicit intent */
+//            val intent = Intent(Intent.ACTION_VIEW)
+//            // extract the characters before the @
+//            val username = binding.emailTextField.editText?.text.toString()
+//                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
+//            intent.putExtra("EXTRA_EMAIL", username)
+//            intent.type = "text/plain"
+//            startActivity(intent)
         }
 
     }
