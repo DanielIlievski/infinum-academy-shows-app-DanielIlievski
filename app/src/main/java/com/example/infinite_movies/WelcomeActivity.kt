@@ -1,9 +1,12 @@
 package com.example.infinite_movies
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import com.example.infinite_movies.databinding.ActivityLoginBinding
+import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import com.example.infinite_movies.databinding.ActivityWelcomeBinding
+import java.util.*
+
 
 class WelcomeActivity : AppCompatActivity() {
 
@@ -17,5 +20,14 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.welcomeText.text = "Welcome " + intent.extras?.getString("EXTRA_EMAIL")
+
+        // switching automatically to ShowsActivity
+        val mHandler = Handler()
+        mHandler.postDelayed(object : Runnable {
+            override fun run() {
+                val intent = Intent(this@WelcomeActivity, ShowsActivity::class.java)
+                startActivity(intent)
+            }
+        }, 2000)
     }
 }
