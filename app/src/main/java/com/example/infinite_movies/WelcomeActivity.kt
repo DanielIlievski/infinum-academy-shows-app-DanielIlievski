@@ -7,7 +7,11 @@ import com.example.infinite_movies.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityWelcomeBinding
+    private lateinit var binding: ActivityWelcomeBinding
+
+    companion object {
+        private const val EXTRA_MAIL = "EXTRA_MAIL"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +20,6 @@ class WelcomeActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.welcomeText.text = "Welcome " + intent.extras?.getString("EXTRA_EMAIL")
+        binding.welcomeText.text = "Welcome " + intent.extras?.getString(EXTRA_MAIL)
     }
 }
