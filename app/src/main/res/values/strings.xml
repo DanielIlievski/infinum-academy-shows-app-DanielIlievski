@@ -14,4 +14,8 @@
     <string name="login_helper">In order to continue please log in</string>
     <string name="shows">Shows</string>
     <string name="welcome_text">Welcome, someones_mail!</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="load">Load</string>
+    <string name="empty_shows_list">Your shows are not showing. Get it?</string>
+    <string name="hide">Hide</string>
 </resources>
