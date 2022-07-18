@@ -25,7 +25,8 @@ class WelcomeActivity : AppCompatActivity() {
         val mHandler = Handler()
         mHandler.postDelayed(object : Runnable {
             override fun run() {
-                val intent = Intent(this@WelcomeActivity, ShowsActivity::class.java)
+                val intent = ShowsActivity.buildIntent(this@WelcomeActivity)
+                intent.putExtra("EXTRA_USERNAME",intent.extras?.getString("EXTRA_EMAIL"))
                 startActivity(intent)
             }
         }, 2000)

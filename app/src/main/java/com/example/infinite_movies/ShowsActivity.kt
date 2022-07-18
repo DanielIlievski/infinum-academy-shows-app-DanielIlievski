@@ -14,7 +14,6 @@ import com.example.infinite_movies.model.Show
 class ShowsActivity : AppCompatActivity() {
 
     companion object {
-
         fun buildIntent(activity: Activity): Intent {
             return Intent (activity, ShowsActivity::class.java)
         }
@@ -48,13 +47,19 @@ class ShowsActivity : AppCompatActivity() {
         initShowsRecycler()
 
         initLoadShowsButton()
-//
-//        initAddShowButton()
+
     }
 
     private fun initShowsRecycler() {
-        adapter = ShowsAdapter(emptyList()) { show ->
-            Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
+        adapter = ShowsAdapter(shows) { show ->
+            /* Toast is to display text (show.name) when clicked */
+            //Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
+            val intent = ShowDetailsActivity.buildIntent(this)
+            intent.putExtra(ShowDetailsActivity.getExtraTitle(), show.name)
+            intent.putExtra(ShowDetailsActivity.getExtraDescription(), show.description)
+            intent.putExtra(ShowDetailsActivity.getExtraImage(), show.imageResourceId)
+            intent.putExtra("EXTRA_USERNAME", intent.extras?.getString("EXTRA_USERNAME"))
+            startActivity(intent)
         }
 
         binding.showsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
