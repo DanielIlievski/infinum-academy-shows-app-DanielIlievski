@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.infinite_movies.databinding.ActivityWelcomeBinding
 import java.util.*
 
-
 class WelcomeActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityWelcomeBinding
@@ -26,7 +25,7 @@ class WelcomeActivity : AppCompatActivity() {
         mHandler.postDelayed(object : Runnable {
             override fun run() {
                 val intent = ShowsActivity.buildIntent(this@WelcomeActivity)
-                intent.putExtra("EXTRA_USERNAME",intent.extras?.getString("EXTRA_EMAIL"))
+                intent.putExtra("EXTRA_USERNAME", intent.extras?.getString("EXTRA_EMAIL"))
                 startActivity(intent)
             }
         }, 2000)

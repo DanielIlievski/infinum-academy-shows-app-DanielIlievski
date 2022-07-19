@@ -78,29 +78,29 @@ class ShowDetailsActivity : AppCompatActivity() {
         val title = intent.extras?.getString(getExtraTitle())
         binding.toolbar.title = title
 
-//        binding.collapsingAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-//            val actionBar = supportActionBar
-//            val toolbarCollapsed = Math.abs(verticalOffset) >= appBarLayout.totalScrollRange
-//            if(toolbarCollapsed)
-//                binding.toolbar.title = title
-//            else
-//                binding.toolbar.title = " "
-//        })
+        //        binding.collapsingAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        //            val actionBar = supportActionBar
+        //            val toolbarCollapsed = Math.abs(verticalOffset) >= appBarLayout.totalScrollRange
+        //            if(toolbarCollapsed)
+        //                binding.toolbar.title = title
+        //            else
+        //                binding.toolbar.title = " "
+        //        })
 
-//        var isShow = true
-//        var scrollRange = -1
-//        binding.collapsingAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { barLayout, verticalOffset ->
-//            if (scrollRange == -1){
-//                scrollRange = barLayout?.totalScrollRange!!
-//            }
-//            if (scrollRange + verticalOffset == 0){
-//                binding.toolbar.title = title
-//                isShow = true
-//            } else if (isShow){
-//                binding.toolbar.title = " " //careful there should a space between double quote otherwise it wont work
-//                isShow = false
-//            }
-//        })
+        //        var isShow = true
+        //        var scrollRange = -1
+        //        binding.collapsingAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { barLayout, verticalOffset ->
+        //            if (scrollRange == -1){
+        //                scrollRange = barLayout?.totalScrollRange!!
+        //            }
+        //            if (scrollRange + verticalOffset == 0){
+        //                binding.toolbar.title = title
+        //                isShow = true
+        //            } else if (isShow){
+        //                binding.toolbar.title = " " //careful there should a space between double quote otherwise it wont work
+        //                isShow = false
+        //            }
+        //        })
         val imgResId = intent.extras!!.getInt(getExtraImage())
         binding.collapseBarImage.setImageResource(imgResId)
         setSupportActionBar(binding.toolbar)
@@ -179,14 +179,17 @@ class ShowDetailsActivity : AppCompatActivity() {
         dialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submitButton.setOnClickListener {
-            addReviewToList(bottomSheetBinding.writeReviewTextField.editText?.text.toString(), bottomSheetBinding.reviewRatingBar.rating.toInt())
+            addReviewToList(
+                bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
+                bottomSheetBinding.reviewRatingBar.rating.toInt()
+            )
             dialog.dismiss()
         }
 
         dialog.show()
     }
 
-    private fun addReviewToList(comment: String, numStars: Int){
-        adapter.addReview(Review(reviews.count()+1, "ivan.toshev", comment, numStars, R.drawable.ic_review_profile))
+    private fun addReviewToList(comment: String, numStars: Int) {
+        adapter.addReview(Review(reviews.count() + 1, "ivan.toshev", comment, numStars, R.drawable.ic_review_profile))
     }
 }

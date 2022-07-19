@@ -9,20 +9,19 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.infinite_movies.databinding.ActivityLoginBinding
 import java.util.regex.Pattern
 
-
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityLoginBinding
 
-//    val EMAIL_ADDRESS_PATTERN = Pattern.compile(
-//        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-//                "\\@" +
-//                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-//                "(" +
-//                "\\." +
-//                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-//                ")+"
-//    )
+    //    val EMAIL_ADDRESS_PATTERN = Pattern.compile(
+    //        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+    //                "\\@" +
+    //                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+    //                "(" +
+    //                "\\." +
+    //                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+    //                ")+"
+    //    )
 
     private fun isValidEmail(email: String): Boolean {
         //return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
@@ -111,15 +110,14 @@ class LoginActivity : AppCompatActivity() {
             intent.putExtra("EXTRA_EMAIL", username)
             startActivity(intent)
 
-
             /* Starting WelcomeActivity.kt with an implicit intent */
-//            val intent = Intent(Intent.ACTION_VIEW)
-//            // extract the characters before the @
-//            val username = binding.emailTextField.editText?.text.toString()
-//                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
-//            intent.putExtra("EXTRA_EMAIL", username)
-//            intent.type = "text/plain"
-//            startActivity(intent)
+            //            val intent = Intent(Intent.ACTION_VIEW)
+            //            // extract the characters before the @
+            //            val username = binding.emailTextField.editText?.text.toString()
+            //                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
+            //            intent.putExtra("EXTRA_EMAIL", username)
+            //            intent.type = "text/plain"
+            //            startActivity(intent)
         }
 
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,14 +29,14 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/stranger_things_show"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="parallax"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -59,7 +60,7 @@
                 android:layout_margin="24dp"
                 android:justificationMode="inter_word"
                 android:text="@string/lorem_ipsum"
-                android:textSize="17sp" />
+                android:textSize="17sp"/>
 
             <TextView
                 android:id="@+id/reviews"
@@ -71,14 +72,14 @@
                 android:textColor="@color/black"
                 android:textSize="24sp"
 
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/ratingBarText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
-                android:text="@string/ratingBarText" />
+                android:text="@string/ratingBarText"/>
 
             <RatingBar
                 android:id="@+id/ratingBar"
@@ -94,13 +95,13 @@
                 android:scaleY="1.5"
                 android:stepSize="0.01"
                 android:transformPivotX="0dp"
-                android:transformPivotY="0dp" />
+                android:transformPivotY="0dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/reviewsRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/item_review" />
+                tools:listitem="@layout/item_review"/>
 
             <TextView
                 android:id="@+id/reviewEmptyStateText"
@@ -109,8 +110,7 @@
                 android:gravity="center_horizontal"
                 android:padding="40dp"
                 android:text="@string/no_reviews_yet"
-                android:visibility="gone" />
-
+                android:visibility="gone"/>
 
         </LinearLayout>
 
