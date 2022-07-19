@@ -29,6 +29,11 @@ class ReviewsAdapter(
         notifyDataSetChanged()
     }
 
+    fun addReview(review: Review) {
+        items += review
+        notifyItemInserted(items.lastIndex)
+    }
+
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Review) {

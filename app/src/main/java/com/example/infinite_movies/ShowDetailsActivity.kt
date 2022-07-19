@@ -13,7 +13,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.infinite_movies.databinding.ActivityShowDetailsBinding
+import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.model.Review
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowDetailsActivity : AppCompatActivity() {
 
@@ -21,6 +23,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         private const val EXTRA_TITLE = "EXTRA_TITLE"
         private const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
         private const val EXTRA_IMAGE = "EXTRA_IMAGE"
+        private const val EXTRA_USERNAME = "EXTRA_USERNAME"
         fun getExtraTitle(): String {
             return EXTRA_TITLE
         }
@@ -33,8 +36,19 @@ class ShowDetailsActivity : AppCompatActivity() {
             return EXTRA_IMAGE
         }
 
-        fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, ShowDetailsActivity::class.java)
+        fun buildIntent(
+            activity: Activity,
+            title: String,
+            description: String,
+            image: Int,
+            username: String
+        ): Intent {
+            val intent = Intent(activity, ShowDetailsActivity::class.java)
+            intent.putExtra(EXTRA_TITLE, title)
+            intent.putExtra(EXTRA_DESCRIPTION, description)
+            intent.putExtra(EXTRA_IMAGE, image)
+            intent.putExtra(EXTRA_USERNAME, username)
+            return intent
         }
     }
 
@@ -101,7 +115,11 @@ class ShowDetailsActivity : AppCompatActivity() {
         binding.ratingBar.rating = avgStars
 
         binding.ratingBarText.text =
-            getString(R.string.ratingBarText, reviews.count().toString(), String.format("%.2f", avgStars))
+            getString(
+                R.string.ratingBarText,
+                reviews.count().toString(),
+                String.format("%.2f", avgStars)
+            )
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -114,6 +132,21 @@ class ShowDetailsActivity : AppCompatActivity() {
         initReviewsRecycler()
 
         initLoadReviewsButton()
+
+        initAddReviewButton()
+    }
+
+    private fun initReviewsRecycler() {
+        adapter = ReviewsAdapter(reviews)
+
+        binding.reviewsRecycler.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        binding.reviewsRecycler.adapter = adapter
+
+        binding.reviewsRecycler.addItemDecoration(
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        )
     }
 
     private fun initLoadReviewsButton() {
@@ -133,16 +166,27 @@ class ShowDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun initReviewsRecycler() {
-        adapter = ReviewsAdapter(reviews)
+    private fun initAddReviewButton() {
+        binding.writeReviewButton.setOnClickListener {
+            showAddCommentBottomSheet()
+        }
+    }
 
-        binding.reviewsRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    private fun showAddCommentBottomSheet() {
+        val dialog = BottomSheetDialog(this)
 
-        binding.reviewsRecycler.adapter = adapter
+        val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
+        dialog.setContentView(bottomSheetBinding.root)
 
-        binding.reviewsRecycler.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        )
+        bottomSheetBinding.submitButton.setOnClickListener {
+            addReviewToList(bottomSheetBinding.writeReviewTextField.editText?.text.toString(), bottomSheetBinding.reviewRatingBar.rating.toInt())
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun addReviewToList(comment: String, numStars: Int){
+        adapter.addReview(Review(reviews.count()+1, "ivan.toshev", comment, numStars, R.drawable.ic_review_profile))
     }
 }

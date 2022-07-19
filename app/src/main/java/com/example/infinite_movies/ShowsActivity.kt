@@ -54,11 +54,7 @@ class ShowsActivity : AppCompatActivity() {
         adapter = ShowsAdapter(shows) { show ->
             /* Toast is to display text (show.name) when clicked */
             //Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
-            val intent = ShowDetailsActivity.buildIntent(this)
-            intent.putExtra(ShowDetailsActivity.getExtraTitle(), show.name)
-            intent.putExtra(ShowDetailsActivity.getExtraDescription(), show.description)
-            intent.putExtra(ShowDetailsActivity.getExtraImage(), show.imageResourceId)
-            intent.putExtra("EXTRA_USERNAME", intent.extras?.getString("EXTRA_USERNAME"))
+            val intent = ShowDetailsActivity.buildIntent(this, show.name, show.description, show.imageResourceId, intent.extras?.getString("EXTRA_USERNAME").toString())
             startActivity(intent)
         }
 
