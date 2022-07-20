@@ -11,7 +11,12 @@ import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
+
+    companion object {
+        private const val EXTRA_MAIL = "EXTRA_MAIL"
+        private const val FIVE = 5
+    }
 
     //    val EMAIL_ADDRESS_PATTERN = Pattern.compile(
     //        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
@@ -29,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun isPasswordLongEnough(password: String): Boolean {
-        return password.length > 5
+        return password.length > FIVE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,19 +44,22 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        fun isButtonEnabled(): Boolean {
+            return isValidEmail(binding.emailTextField.editText?.text.toString()) && isPasswordLongEnough(
+                binding.passwordTextField.editText?.text.toString()
+            )
+        }
+
         // disable and enable the Login button when email and password conditions are fulfilled
         binding.emailTextField.editText?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
 
-            override fun afterTextChanged(p0: Editable?) {
-                binding.loginButton.isEnabled =
-                    isValidEmail(binding.emailTextField.editText?.text.toString()) && isPasswordLongEnough(
-                        binding.passwordTextField.editText?.text.toString()
-                    )
+            override fun afterTextChanged(s: Editable?) {
+                binding.loginButton.isEnabled = isButtonEnabled()
                 // set error message for invalid email
                 if (isValidEmail(binding.emailTextField.editText?.text.toString()))
                     binding.emailTextField.error = null
@@ -60,9 +68,9 @@ class LoginActivity : AppCompatActivity() {
 
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(Color.parseColor("#3D1D72"))
+                    binding.loginButton.setTextColor(getColor(R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(Color.parseColor("#BBBBBB"))
+                    binding.loginButton.setBackgroundColor(getColor(R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }
@@ -76,10 +84,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                binding.loginButton.isEnabled =
-                    isPasswordLongEnough(binding.passwordTextField.editText?.text.toString()) && isValidEmail(
-                        binding.emailTextField.editText?.text.toString()
-                    )
+                binding.loginButton.isEnabled = isButtonEnabled()
 
                 if (isPasswordLongEnough(binding.passwordTextField.editText?.text.toString()))
                     binding.passwordTextField.error = null
@@ -91,9 +96,9 @@ class LoginActivity : AppCompatActivity() {
 
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(Color.parseColor("#3D1D72"))
+                    binding.loginButton.setTextColor(getColor(R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(Color.parseColor("#BBBBBB"))
+                    binding.loginButton.setBackgroundColor(getColor(R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }
@@ -107,7 +112,7 @@ class LoginActivity : AppCompatActivity() {
             val username = binding.emailTextField.editText?.text.toString()
                 .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
 
-            intent.putExtra("EXTRA_EMAIL", username)
+            intent.putExtra(EXTRA_MAIL, username)
             startActivity(intent)
 
             /* Starting WelcomeActivity.kt with an implicit intent */

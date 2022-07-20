@@ -14,8 +14,13 @@ import com.example.infinite_movies.model.Show
 class ShowsActivity : AppCompatActivity() {
 
     companion object {
-        fun buildIntent(activity: Activity): Intent {
-            return Intent(activity, ShowsActivity::class.java)
+
+        private const val EXTRA_USERNAME = "EXTRA_USERNAME"
+
+        fun buildIntent(activity: Activity, username: String): Intent {
+            val intent = Intent(activity, ShowsActivity::class.java)
+            intent.putExtra("EXTRA_USERNAME", EXTRA_USERNAME)
+            return intent
         }
     }
 
