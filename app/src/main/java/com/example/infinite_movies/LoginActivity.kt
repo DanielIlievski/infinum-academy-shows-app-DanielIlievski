@@ -14,7 +14,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
 
     companion object {
-        private const val EXTRA_MAIL = "EXTRA_MAIL"
         private const val FIVE = 5
     }
 
@@ -105,14 +104,11 @@ class LoginActivity : AppCompatActivity() {
         })
 
         binding.loginButton.setOnClickListener {
-
-            val intent = Intent(this, WelcomeActivity::class.java)
-
             // extract the characters before the @
             val username = binding.emailTextField.editText?.text.toString()
                 .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
 
-            intent.putExtra(EXTRA_MAIL, username)
+            val intent = WelcomeActivity.buildIntent(this@LoginActivity, username)
             startActivity(intent)
 
             /* Starting WelcomeActivity.kt with an implicit intent */
