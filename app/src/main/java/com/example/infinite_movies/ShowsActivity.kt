@@ -17,9 +17,13 @@ class ShowsActivity : AppCompatActivity() {
 
         private const val EXTRA_USERNAME = "EXTRA_USERNAME"
 
+        fun getExtraUsername(): String{
+            return EXTRA_USERNAME
+        }
+
         fun buildIntent(activity: Activity, username: String): Intent {
             val intent = Intent(activity, ShowsActivity::class.java)
-            intent.putExtra("EXTRA_USERNAME", EXTRA_USERNAME)
+            intent.putExtra(EXTRA_USERNAME, username)
             return intent
         }
     }

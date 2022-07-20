@@ -11,10 +11,6 @@ class WelcomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWelcomeBinding
 
-    companion object {
-        private const val EXTRA_MAIL = "EXTRA_MAIL"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,14 +18,14 @@ class WelcomeActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.welcomeText.text = "Welcome " + intent.extras?.getString(EXTRA_MAIL)
+        binding.welcomeText.text = String.format(R.string.welcome.toString() + intent.extras?.getString(ShowsActivity.getExtraUsername()))
 
         // switching automatically to ShowsActivity
         val mHandler = Handler()
         mHandler.postDelayed(object : Runnable {
             override fun run() {
-                val intent = ShowsActivity.buildIntent(this@WelcomeActivity)
-                intent.putExtra("EXTRA_USERNAME", intent.extras?.getString("EXTRA_EMAIL"))
+                val username = intent.extras?.getString(ShowsActivity.getExtraUsername()).toString()
+                val intent = ShowsActivity.buildIntent(this@WelcomeActivity, username)
                 startActivity(intent)
             }
         }, 2000)
