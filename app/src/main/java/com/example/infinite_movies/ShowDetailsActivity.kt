@@ -52,7 +52,7 @@ class ShowDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private val reviews = listOf(
+    private var reviews = listOf(
         Review(1, "daniel.ilievski", "Great show!", 5, R.drawable.ic_review_profile),
         Review(2, "petar.petrovski", "", 2, R.drawable.ic_review_profile),
         Review(3, "marko.markoski", "I laughed so much!", 4, R.drawable.ic_review_profile),
@@ -68,6 +68,14 @@ class ShowDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityShowDetailsBinding
 
     private lateinit var adapter: ReviewsAdapter
+
+    private fun getAvgRatingStars(): Float {
+        var stars = 0
+        for (review in reviews) {
+            stars += review.ratingStars
+        }
+        return stars.toFloat() / reviews.count()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,19 +115,16 @@ class ShowDetailsActivity : AppCompatActivity() {
 
         binding.nestedScrollViewText.text = intent.extras?.getString(getExtraDescription())
 
-        var stars = 0
-        for (review in reviews) {
-            stars += review.ratingStars
-        }
-        val avgStars = stars.toFloat() / reviews.count()
-        binding.ratingBar.rating = avgStars
+        binding.ratingBar.rating = getAvgRatingStars()
 
         binding.ratingBarText.text =
             getString(
                 R.string.ratingBarText,
                 reviews.count().toString(),
-                String.format("%.2f", avgStars)
+                String.format("%.2f", getAvgRatingStars())
             )
+
+
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -190,6 +195,16 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun addReviewToList(comment: String, numStars: Int) {
-        adapter.addReview(Review(reviews.count() + 1, "ivan.toshev", comment, numStars, R.drawable.ic_review_profile))
+        val review = Review(reviews.count() + 1, "ivan.toshev", comment, numStars, R.drawable.ic_review_profile)
+        adapter.addReview(review)
+        reviews += review
+        binding.ratingBar.rating = getAvgRatingStars()
+
+        binding.ratingBarText.text =
+            getString(
+                R.string.ratingBarText,
+                reviews.count().toString(),
+                String.format("%.2f", getAvgRatingStars())
+            )
     }
 }
