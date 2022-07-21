@@ -1,56 +1,31 @@
 package com.example.infinite_movies
 
-import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.infinite_movies.databinding.ActivityShowDetailsBinding
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
+import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
 import com.example.infinite_movies.model.Review
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class ShowDetailsActivity : AppCompatActivity() {
+class ShowDetailsFragment : Fragment() {
 
-    companion object {
-        private const val EXTRA_TITLE = "EXTRA_TITLE"
-        private const val EXTRA_DESCRIPTION = "EXTRA_DESCRIPTION"
-        private const val EXTRA_IMAGE = "EXTRA_IMAGE"
-        private const val EXTRA_USERNAME = "EXTRA_USERNAME"
-        fun getExtraTitle(): String {
-            return EXTRA_TITLE
-        }
+    private var _binding: FragmentShowDetailsBinding? = null
 
-        fun getExtraDescription(): String {
-            return EXTRA_DESCRIPTION
-        }
+    private val binding get() = _binding!!
 
-        fun getExtraImage(): String {
-            return EXTRA_IMAGE
-        }
+    private lateinit var adapter: ReviewsAdapter
 
-        fun buildIntent(
-            activity: Activity,
-            title: String,
-            description: String,
-            image: Int,
-            username: String
-        ): Intent {
-            val intent = Intent(activity, ShowDetailsActivity::class.java)
-            intent.putExtra(EXTRA_TITLE, title)
-            intent.putExtra(EXTRA_DESCRIPTION, description)
-            intent.putExtra(EXTRA_IMAGE, image)
-            intent.putExtra(EXTRA_USERNAME, username)
-            return intent
-        }
-    }
+    private val args by navArgs<ShowDetailsFragmentArgs>()
 
     private var reviews = listOf(
         Review(1, "daniel.ilievski", "Great show!", 5, R.drawable.ic_review_profile),
@@ -65,10 +40,6 @@ class ShowDetailsActivity : AppCompatActivity() {
         Review(10, "petko.petkoski", "", 3, R.drawable.ic_review_profile)
     )
 
-    private lateinit var binding: ActivityShowDetailsBinding
-
-    private lateinit var adapter: ReviewsAdapter
-
     private fun getAvgRatingStars(): Float {
         var stars = 0
         for (review in reviews) {
@@ -77,43 +48,34 @@ class ShowDetailsActivity : AppCompatActivity() {
         return stars.toFloat() / reviews.count()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentShowDetailsBinding.inflate(inflater, container, false)
 
-        binding = ActivityShowDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        return binding.root
+    }
 
-        val title = intent.extras?.getString(getExtraTitle())
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initAssignValues()
+
+        initListeners()
+
+        initReviewsRecycler()
+
+        initLoadReviewsButton()
+
+        initAddReviewButton()
+    }
+
+    private fun initAssignValues() {
+        val title = args.showName
+        val imgResId = args.showImageResourceId
+        val description = args.showDescription
+
         binding.toolbar.title = title
-
-        //        binding.collapsingAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-        //            val actionBar = supportActionBar
-        //            val toolbarCollapsed = Math.abs(verticalOffset) >= appBarLayout.totalScrollRange
-        //            if(toolbarCollapsed)
-        //                binding.toolbar.title = title
-        //            else
-        //                binding.toolbar.title = " "
-        //        })
-
-        //        var isShow = true
-        //        var scrollRange = -1
-        //        binding.collapsingAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { barLayout, verticalOffset ->
-        //            if (scrollRange == -1){
-        //                scrollRange = barLayout?.totalScrollRange!!
-        //            }
-        //            if (scrollRange + verticalOffset == 0){
-        //                binding.toolbar.title = title
-        //                isShow = true
-        //            } else if (isShow){
-        //                binding.toolbar.title = " " //careful there should a space between double quote otherwise it wont work
-        //                isShow = false
-        //            }
-        //        })
-        val imgResId = intent.extras!!.getInt(getExtraImage())
         binding.collapseBarImage.setImageResource(imgResId)
-        setSupportActionBar(binding.toolbar)
-
-        binding.nestedScrollViewText.text = intent.extras?.getString(getExtraDescription())
+        binding.nestedScrollViewText.text = description
 
         binding.ratingBar.rating = getAvgRatingStars()
 
@@ -123,34 +85,36 @@ class ShowDetailsActivity : AppCompatActivity() {
                 reviews.count().toString(),
                 String.format("%.2f", getAvgRatingStars())
             )
+    }
 
-
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+    private fun initListeners() {
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
 
         binding.toolbar.setNavigationOnClickListener(View.OnClickListener {
-            startActivity(Intent(this, ShowsActivity::class.java))
-            finish()
+            val directions = ShowDetailsFragmentDirections.toShowsFragment(args.username)
+
+            findNavController().navigate(directions)
         })
+    }
 
-        initReviewsRecycler()
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-        initLoadReviewsButton()
-
-        initAddReviewButton()
+        _binding = null
     }
 
     private fun initReviewsRecycler() {
         adapter = ReviewsAdapter(reviews)
 
         binding.reviewsRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         binding.reviewsRecycler.adapter = adapter
 
         binding.reviewsRecycler.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         )
     }
 
@@ -178,7 +142,7 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun showAddCommentBottomSheet() {
-        val dialog = BottomSheetDialog(this)
+        val dialog = BottomSheetDialog(requireContext())
 
         val bottomSheetBinding = DialogAddReviewBinding.inflate(layoutInflater)
         dialog.setContentView(bottomSheetBinding.root)
@@ -195,7 +159,7 @@ class ShowDetailsActivity : AppCompatActivity() {
     }
 
     private fun addReviewToList(comment: String, numStars: Int) {
-        val review = Review(reviews.count() + 1, "ivan.toshev", comment, numStars, R.drawable.ic_review_profile)
+        val review = Review(reviews.count() + 1, args.username, comment, numStars, R.drawable.ic_review_profile)
         adapter.addReview(review)
         reviews += review
         binding.ratingBar.rating = getAvgRatingStars()

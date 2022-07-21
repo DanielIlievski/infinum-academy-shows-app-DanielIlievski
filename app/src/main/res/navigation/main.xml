@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main.xml"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.infinite_movies.LoginFragment"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/toWelcomeFragment"
+            app:destination="@id/welcomeFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.example.infinite_movies.WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
+
+        <action
+            android:id="@+id/toShowsFragment"
+            app:destination="@+id/showsFragment"/>
+
+        <argument
+            android:name="username"
+            app:argType="string"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/showsFragment"
+        android:name="com.example.infinite_movies.ShowsFragment"
+        tools:layout="@layout/fragment_shows">
+
+        <argument
+            android:name="username"
+            app:argType="string"/>
+
+        <action
+            android:id="@+id/toShowDetailsFragment"
+            app:destination="@id/showDetailsFragment"/>
+
+        <action
+            android:id="@+id/toLoginFragment"
+            app:destination="@id/loginFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/showDetailsFragment"
+        android:name="com.example.infinite_movies.ShowDetailsFragment"
+        tools:layout="@layout/fragment_show_details">
+
+        <argument
+            android:name="showName"
+            app:argType="string"/>
+
+        <argument
+            android:name="showDescription"
+            app:argType="string"/>
+
+        <argument
+            android:name="showImageResourceId"
+            app:argType="integer"/>
+
+        <argument
+            android:name="username"
+            app:argType="string"/>
+
+        <action
+            android:id="@+id/toShowsFragment"
+            app:destination="@id/showsFragment"/>
+
+    </fragment>
+
+</navigation>
