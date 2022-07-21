@@ -9,25 +9,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.infinite_movies.databinding.ActivityLoginBinding
 import java.util.regex.Pattern
 
-
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
     companion object {
-        private const val EXTRA_MAIL = "EXTRA_MAIL"
         private const val FIVE = 5
     }
 
-//    val EMAIL_ADDRESS_PATTERN = Pattern.compile(
-//        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-//                "\\@" +
-//                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-//                "(" +
-//                "\\." +
-//                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-//                ")+"
-//    )
+    //    val EMAIL_ADDRESS_PATTERN = Pattern.compile(
+    //        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+    //                "\\@" +
+    //                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+    //                "(" +
+    //                "\\." +
+    //                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+    //                ")+"
+    //    )
 
     private fun isValidEmail(email: String): Boolean {
         //return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
@@ -106,25 +104,21 @@ class LoginActivity : AppCompatActivity() {
         })
 
         binding.loginButton.setOnClickListener {
-
-            val intent = Intent(this, WelcomeActivity::class.java)
-
             // extract the characters before the @
             val username = binding.emailTextField.editText?.text.toString()
                 .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
 
-            intent.putExtra(EXTRA_MAIL, username)
+            val intent = WelcomeActivity.buildIntent(this@LoginActivity, username)
             startActivity(intent)
 
-
             /* Starting WelcomeActivity.kt with an implicit intent */
-//            val intent = Intent(Intent.ACTION_VIEW)
-//            // extract the characters before the @
-//            val username = binding.emailTextField.editText?.text.toString()
-//                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
-//            intent.putExtra("EXTRA_EMAIL", username)
-//            intent.type = "text/plain"
-//            startActivity(intent)
+            //            val intent = Intent(Intent.ACTION_VIEW)
+            //            // extract the characters before the @
+            //            val username = binding.emailTextField.editText?.text.toString()
+            //                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
+            //            intent.putExtra("EXTRA_EMAIL", username)
+            //            intent.type = "text/plain"
+            //            startActivity(intent)
         }
 
     }
