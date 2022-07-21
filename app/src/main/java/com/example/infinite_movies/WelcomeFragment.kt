@@ -35,7 +35,7 @@ class WelcomeFragment : Fragment() {
         val mHandler = Handler()
         mHandler.postDelayed(object : Runnable {
             override fun run() {
-                val directions = WelcomeFragmentDirections.toShowsFragment(args.username)
+                val directions = WelcomeFragmentDirections.toNavigation(args.username)
 
                 findNavController().navigate(directions)
             }
