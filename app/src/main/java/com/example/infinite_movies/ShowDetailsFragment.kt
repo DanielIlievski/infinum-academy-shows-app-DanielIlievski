@@ -1,14 +1,13 @@
 package com.example.infinite_movies
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,6 +47,17 @@ class ShowDetailsFragment : Fragment() {
         return stars.toFloat() / reviews.count()
     }
 
+    private fun addRatingBarStats(){
+        binding.ratingBar.rating = getAvgRatingStars()
+
+        binding.ratingBarText.text =
+            getString(
+                R.string.ratingBarText,
+                reviews.count().toString(),
+                String.format("%.2f", getAvgRatingStars())
+            )
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentShowDetailsBinding.inflate(inflater, container, false)
 
@@ -73,36 +83,23 @@ class ShowDetailsFragment : Fragment() {
         val imgResId = args.showImageResourceId
         val description = args.showDescription
 
-        binding.toolbar.title = title
+        binding.showDetailsToolbar.title = title
         binding.collapseBarImage.setImageResource(imgResId)
         binding.nestedScrollViewText.text = description
 
-        binding.ratingBar.rating = getAvgRatingStars()
-
-        binding.ratingBarText.text =
-            getString(
-                R.string.ratingBarText,
-                reviews.count().toString(),
-                String.format("%.2f", getAvgRatingStars())
-            )
-    }
-
-    private fun initListeners() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        binding.toolbar.setNavigationOnClickListener(View.OnClickListener {
-            val directions = ShowDetailsFragmentDirections.toShowsFragment(args.username)
-
-            findNavController().navigate(directions)
-        })
+        addRatingBarStats()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
         _binding = null
+    }
+
+    private fun initListeners() {
+        (activity as AppCompatActivity).setSupportActionBar(binding.showDetailsToolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     private fun initReviewsRecycler() {
@@ -162,13 +159,7 @@ class ShowDetailsFragment : Fragment() {
         val review = Review(reviews.count() + 1, args.username, comment, numStars, R.drawable.ic_review_profile)
         adapter.addReview(review)
         reviews += review
-        binding.ratingBar.rating = getAvgRatingStars()
 
-        binding.ratingBarText.text =
-            getString(
-                R.string.ratingBarText,
-                reviews.count().toString(),
-                String.format("%.2f", getAvgRatingStars())
-            )
+        addRatingBarStats()
     }
 }

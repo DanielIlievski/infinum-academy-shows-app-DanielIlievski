@@ -54,6 +54,7 @@
                 android:id="@+id/toLoginFragment"
                 app:destination="@id/loginFragment"/>
         </fragment>
+
         <fragment
             android:id="@+id/showDetailsFragment"
             android:name="com.example.infinite_movies.ShowDetailsFragment"
@@ -74,11 +75,6 @@
             <argument
                 android:name="username"
                 app:argType="string"/>
-
-            <action
-                android:id="@+id/toShowsFragment"
-                app:destination="@id/showsFragment"/>
-
         </fragment>
     </navigation>
 
