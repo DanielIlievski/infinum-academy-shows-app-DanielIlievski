@@ -1,31 +1,25 @@
 package com.example.infinite_movies
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.appcompat.app.AppCompatActivity
-import com.example.infinite_movies.databinding.ActivityLoginBinding
-import java.util.regex.Pattern
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.infinite_movies.databinding.FragmentLoginBinding
 
-class LoginActivity : AppCompatActivity() {
+class LoginFragment : Fragment() {
 
-    private lateinit var binding: ActivityLoginBinding
+    private var _binding: FragmentLoginBinding? = null
+
+    private val binding get() = _binding!!
 
     companion object {
         private const val FIVE = 5
     }
-
-    //    val EMAIL_ADDRESS_PATTERN = Pattern.compile(
-    //        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-    //                "\\@" +
-    //                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-    //                "(" +
-    //                "\\." +
-    //                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-    //                ")+"
-    //    )
 
     private fun isValidEmail(email: String): Boolean {
         //return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
@@ -36,17 +30,37 @@ class LoginActivity : AppCompatActivity() {
         return password.length > FIVE
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private fun isButtonEnabled(): Boolean {
+        return isValidEmail(binding.emailTextField.editText?.text.toString()) && isPasswordLongEnough(
+            binding.passwordTextField.editText?.text.toString()
+        )
+    }
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        fun isButtonEnabled(): Boolean {
-            return isValidEmail(binding.emailTextField.editText?.text.toString()) && isPasswordLongEnough(
-                binding.passwordTextField.editText?.text.toString()
-            )
+        initListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun initListeners() {
+        binding.loginButton.setOnClickListener {
+            // extract the characters before the @
+            val username = binding.emailTextField.editText?.text.toString()
+                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
+
+            val directions = LoginFragmentDirections.toWelcomeFragment(username)
+
+            findNavController().navigate(directions)
         }
 
         // disable and enable the Login button when email and password conditions are fulfilled
@@ -64,12 +78,11 @@ class LoginActivity : AppCompatActivity() {
                     binding.emailTextField.error = null
                 else
                     binding.emailTextField.error = "Invalid email!"
-
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(getColor(R.color.purple_background))
+                    binding.loginButton.setTextColor(resources.getColor(R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(getColor(R.color.grey_disabled))
+                    binding.loginButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }
@@ -92,34 +105,14 @@ class LoginActivity : AppCompatActivity() {
                     // enables password visibility toggle button to be visible when having and error message
                     binding.passwordTextField.errorIconDrawable = null
                 }
-
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(getColor(R.color.purple_background))
+                    binding.loginButton.setTextColor(resources.getColor(R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(getColor(R.color.grey_disabled))
+                    binding.loginButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }
         })
-
-        binding.loginButton.setOnClickListener {
-            // extract the characters before the @
-            val username = binding.emailTextField.editText?.text.toString()
-                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
-
-            val intent = WelcomeActivity.buildIntent(this@LoginActivity, username)
-            startActivity(intent)
-
-            /* Starting WelcomeActivity.kt with an implicit intent */
-            //            val intent = Intent(Intent.ACTION_VIEW)
-            //            // extract the characters before the @
-            //            val username = binding.emailTextField.editText?.text.toString()
-            //                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
-            //            intent.putExtra("EXTRA_EMAIL", username)
-            //            intent.type = "text/plain"
-            //            startActivity(intent)
-        }
-
     }
 }

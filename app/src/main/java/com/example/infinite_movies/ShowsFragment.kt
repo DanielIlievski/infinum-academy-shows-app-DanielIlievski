@@ -1,32 +1,25 @@
 package com.example.infinite_movies
 
-import android.app.Activity
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.infinite_movies.databinding.ActivityShowsBinding
+import com.example.infinite_movies.databinding.FragmentShowsBinding
 import com.example.infinite_movies.model.Show
 
-class ShowsActivity : AppCompatActivity() {
+class ShowsFragment : Fragment() {
 
-    companion object {
+    private var _binding: FragmentShowsBinding? = null
 
-        private const val EXTRA_USERNAME = "EXTRA_USERNAME"
+    private val binding get() = _binding!!
 
-        fun getExtraUsername(): String{
-            return EXTRA_USERNAME
-        }
-
-        fun buildIntent(activity: Activity, username: String): Intent {
-            val intent = Intent(activity, ShowsActivity::class.java)
-            intent.putExtra(EXTRA_USERNAME, username)
-            return intent
-        }
-    }
+    private val args by navArgs<ShowsFragmentArgs>()
 
     private val shows = listOf(
         Show(
@@ -103,48 +96,56 @@ class ShowsActivity : AppCompatActivity() {
         ),
     )
 
-    private lateinit var binding: ActivityShowsBinding
-
     private lateinit var adapter: ShowsAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentShowsBinding.inflate(inflater, container, false)
 
-        binding = ActivityShowsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initListeners()
 
         initShowsRecycler()
 
         initLoadShowsButton()
+    }
 
+    private fun initListeners() {
+        binding.logoutButton.setOnClickListener {
+            val directions = ShowsFragmentDirections.toLoginFragment()
+
+            findNavController().navigate(directions)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
     }
 
     private fun initShowsRecycler() {
         adapter = ShowsAdapter(shows) { show ->
             /* Toast is to display text (show.name) when clicked */
-            //Toast.makeText(this, show.name, Toast.LENGTH_SHORT).show()
-            val intent = ShowDetailsActivity.buildIntent(
-                this,
-                show.name,
-                show.description,
-                show.imageResourceId,
-                intent.extras?.getString("EXTRA_USERNAME").toString()
-            )
-            startActivity(intent)
+            //Toast.makeText(requireContext(), show.name, Toast.LENGTH_SHORT).show()
+
+            val directions = ShowsFragmentDirections.toShowDetailsFragment(show.name, show.description, show.imageResourceId, args.username)
+
+            findNavController().navigate(directions)
         }
 
-        binding.showsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         binding.showsRecycler.adapter = adapter
-
-        //        binding.showsRecycler.addItemDecoration(
-        //            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        //        )
     }
 
     private fun initLoadShowsButton() {
         binding.showEmptyState.setOnClickListener {
-            adapter.addAllItems(shows)
+            //adapter.addAllItems(shows)
             if (binding.showsRecycler.isVisible) {
                 binding.showEmptyState.setText(R.string.load)
                 binding.showsRecycler.isVisible = false
