@@ -27,16 +27,76 @@ class ShowDetailsFragment : Fragment() {
     private val args by navArgs<ShowDetailsFragmentArgs>()
 
     private var reviews = listOf(
-        Review(1, "daniel.ilievski", "Great show!", 5, R.drawable.ic_review_profile),
-        Review(2, "petar.petrovski", "", 2, R.drawable.ic_review_profile),
-        Review(3, "marko.markoski", "I laughed so much!", 4, R.drawable.ic_review_profile),
-        Review(4, "ivan.ivanovski", "Relaxing show.", 4, R.drawable.ic_review_profile),
-        Review(5, "andrej.krsteski", "It was ok.", 3, R.drawable.ic_review_profile),
-        Review(6, "janko.stojanovski", "", 1, R.drawable.ic_review_profile),
-        Review(7, "martin.stojceski", "", 5, R.drawable.ic_review_profile),
-        Review(8, "viktor.smilevski", "Loved it!", 4, R.drawable.ic_review_profile),
-        Review(9, "stefan.dimeski", "I like it.", 3, R.drawable.ic_review_profile),
-        Review(10, "petko.petkoski", "", 3, R.drawable.ic_review_profile)
+        Review(
+            1,
+            "daniel.ilievski",
+            "Great show!",
+            5,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            2,
+            "petar.petrovski",
+            "",
+            2,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            3,
+            "marko.markoski",
+            "I laughed so much!",
+            4,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            4,
+            "ivan.ivanovski",
+            "Relaxing show.",
+            4,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            5,
+            "andrej.krsteski",
+            "It was ok.",
+            3,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            6,
+            "janko.stojanovski",
+            "",
+            1,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            7,
+            "martin.stojceski",
+            "",
+            5,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            8,
+            "viktor.smilevski",
+            "Loved it!",
+            4,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            9,
+            "stefan.dimeski",
+            "I like it.",
+            3,
+            R.drawable.ic_review_profile
+        ),
+        Review(
+            10,
+            "petko.petkoski",
+            "",
+            3,
+            R.drawable.ic_review_profile
+        )
     )
 
     private fun getAvgRatingStars(): Float {
@@ -58,7 +118,7 @@ class ShowDetailsFragment : Fragment() {
             )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentShowDetailsBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -158,7 +218,7 @@ class ShowDetailsFragment : Fragment() {
     private fun addReviewToList(comment: String, numStars: Int) {
         val review = Review(reviews.count() + 1, args.username, comment, numStars, R.drawable.ic_review_profile)
         adapter.addReview(review)
-        reviews += review
+        reviews = reviews + review
 
         addRatingBarStats()
     }

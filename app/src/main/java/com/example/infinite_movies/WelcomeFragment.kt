@@ -20,7 +20,7 @@ class WelcomeFragment : Fragment() {
 
     private val args by navArgs<WelcomeFragmentArgs>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
 
         return binding.root
