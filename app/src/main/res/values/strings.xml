@@ -26,4 +26,7 @@
     <string name="ratingBarText">%1$s reviews, %2$s average</string>
     <string name="comment">Comment</string>
     <string name="submit">Submit</string>
+    <string name="profile_email">%s</string>
+    <string name="change_profile_photo">Change profile photo</string>
+    <string name="logout">Logout</string>
 </resources>

@@ -58,7 +58,9 @@ class LoginFragment : Fragment() {
             val username = binding.emailTextField.editText?.text.toString()
                 .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
 
-            val directions = LoginFragmentDirections.toWelcomeFragment(username)
+            val email = binding.emailTextField.editText?.text.toString()
+
+            val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
 
             findNavController().navigate(directions)
         }

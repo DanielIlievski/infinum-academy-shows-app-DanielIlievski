@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
 import com.example.infinite_movies.model.Show
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowsFragment : Fragment() {
 
@@ -114,18 +115,33 @@ class ShowsFragment : Fragment() {
         initLoadShowsButton()
     }
 
-    private fun initListeners() {
-        binding.logoutButton.setOnClickListener {
-            val directions = ShowsFragmentDirections.toLoginFragment()
-
-            findNavController().navigate(directions)
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
         _binding = null
+    }
+
+    private fun initListeners() {
+        binding.profileSettingsButton.setOnClickListener {
+            showProfileSettingsBottomSheet()
+        }
+    }
+
+    private fun showProfileSettingsBottomSheet() {
+        val dialog = BottomSheetDialog(requireContext())
+
+        val bottomSheetBinding = DialogProfileSettingsBinding.inflate(layoutInflater)
+        dialog.setContentView(bottomSheetBinding.root)
+
+        bottomSheetBinding.profileEmail.text = args.email
+
+        bottomSheetBinding.logoutButton.setOnClickListener {
+            val directions = ShowsFragmentDirections.toLoginFragment()
+
+            findNavController().navigate(directions)
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     private fun initShowsRecycler() {

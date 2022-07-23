@@ -27,6 +27,10 @@
         <argument
             android:name="username"
             app:argType="string"/>
+
+        <argument
+            android:name="email"
+            app:argType="string"/>
     </fragment>
 
     <navigation
@@ -37,6 +41,10 @@
             android:name="username"
             app:argType="string"/>
 
+        <argument
+            android:name="email"
+            app:argType="string"/>
+
         <fragment
             android:id="@+id/showsFragment"
             android:name="com.example.infinite_movies.ShowsFragment"
@@ -44,6 +52,10 @@
 
             <argument
                 android:name="username"
+                app:argType="string"/>
+
+            <argument
+                android:name="email"
                 app:argType="string"/>
 
             <action
