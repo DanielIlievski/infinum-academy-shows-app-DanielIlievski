@@ -30,4 +30,8 @@
     <string name="change_profile_photo">Change profile photo</string>
     <string name="logout">Logout</string>
     <string name="remember_me">Remember me</string>
+    <string name="alertDialogTitle">Confirm Log out</string>
+    <string name="alertDialogMessage">Are you sure?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
 </resources>

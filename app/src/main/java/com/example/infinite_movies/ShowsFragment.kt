@@ -1,11 +1,11 @@
 package com.example.infinite_movies
 
-import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -156,15 +156,32 @@ class ShowsFragment : Fragment() {
         bottomSheetBinding.profileEmail.text = args.email
 
         bottomSheetBinding.logoutButton.setOnClickListener {
-            sharedPreferences.edit().remove("EMAIL").apply()
-            sharedPreferences.edit().remove("PASSWORD").apply()
-            sharedPreferences.edit().putBoolean("IS_CHECKED", false).apply()
-            val directions = ShowsFragmentDirections.toLoginFragment()
-
-            findNavController().navigate(directions)
+            showLogOutAlertDialog()
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+    private fun showLogOutAlertDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.apply {
+            setTitle(R.string.alertDialogTitle)
+            setMessage(R.string.alertDialogMessage)
+            setIcon(android.R.drawable.ic_dialog_alert)
+            setPositiveButton(R.string.Yes){dialogInterface, which ->
+                sharedPreferences.edit().remove("EMAIL").apply()
+                sharedPreferences.edit().remove("PASSWORD").apply()
+                sharedPreferences.edit().putBoolean("IS_CHECKED", false).apply()
+                val directions = ShowsFragmentDirections.toLoginFragment()
+
+                findNavController().navigate(directions)
+            }
+            setNegativeButton(R.string.No){dialogInterface, which ->
+                dialogInterface.dismiss()
+            }
+        }
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.show()
     }
 
     private fun initShowsRecycler() {
