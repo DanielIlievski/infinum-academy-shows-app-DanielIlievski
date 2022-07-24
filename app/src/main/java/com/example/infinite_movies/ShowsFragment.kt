@@ -1,5 +1,7 @@
 package com.example.infinite_movies
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
 import com.example.infinite_movies.model.Show
@@ -99,6 +103,22 @@ class ShowsFragment : Fragment() {
 
     private lateinit var adapter: ShowsAdapter
 
+    private lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
+        val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
+        sharedPreferences = EncryptedSharedPreferences.create(
+            getString(R.string.login),
+            masterKeyAlias,
+            requireContext(),
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentShowsBinding.inflate(inflater, container, false)
 
@@ -136,6 +156,9 @@ class ShowsFragment : Fragment() {
         bottomSheetBinding.profileEmail.text = args.email
 
         bottomSheetBinding.logoutButton.setOnClickListener {
+            sharedPreferences.edit().remove("EMAIL").apply()
+            sharedPreferences.edit().remove("PASSWORD").apply()
+            sharedPreferences.edit().putBoolean("IS_CHECKED", false).apply()
             val directions = ShowsFragmentDirections.toLoginFragment()
 
             findNavController().navigate(directions)
