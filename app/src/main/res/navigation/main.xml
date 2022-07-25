@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.infinite_movies.LoginFragment"
+        android:name="com.example.infinite_movies.fragment.LoginFragment"
         tools:layout="@layout/fragment_login">
 
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.example.infinite_movies.WelcomeFragment"
+        android:name="com.example.infinite_movies.fragment.WelcomeFragment"
         tools:layout="@layout/fragment_welcome">
 
         <action
@@ -47,7 +47,7 @@
 
         <fragment
             android:id="@+id/showsFragment"
-            android:name="com.example.infinite_movies.ShowsFragment"
+            android:name="com.example.infinite_movies.fragment.ShowsFragment"
             tools:layout="@layout/fragment_shows">
 
             <argument
@@ -71,7 +71,7 @@
 
         <fragment
             android:id="@+id/showDetailsFragment"
-            android:name="com.example.infinite_movies.ShowDetailsFragment"
+            android:name="com.example.infinite_movies.fragment.ShowDetailsFragment"
             tools:layout="@layout/fragment_show_details">
 
             <argument

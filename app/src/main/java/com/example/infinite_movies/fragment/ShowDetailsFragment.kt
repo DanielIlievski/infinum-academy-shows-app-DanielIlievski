@@ -1,8 +1,7 @@
-package com.example.infinite_movies
+package com.example.infinite_movies.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.infinite_movies.R
+import com.example.infinite_movies.adapter.ReviewsAdapter
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
 import com.example.infinite_movies.model.Review
@@ -107,7 +108,7 @@ class ShowDetailsFragment : Fragment() {
         return stars.toFloat() / reviews.count()
     }
 
-    private fun addRatingBarStats(){
+    private fun addRatingBarStats() {
         binding.ratingBar.rating = getAvgRatingStars()
 
         binding.ratingBarText.text =

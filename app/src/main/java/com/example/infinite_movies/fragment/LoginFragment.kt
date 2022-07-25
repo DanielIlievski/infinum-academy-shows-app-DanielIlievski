@@ -1,4 +1,4 @@
-package com.example.infinite_movies
+package com.example.infinite_movies.fragment
 
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.example.infinite_movies.R
 import com.example.infinite_movies.databinding.FragmentLoginBinding
 
 private const val IS_CHECKED = "IS_CHECKED"
@@ -72,11 +73,11 @@ class LoginFragment : Fragment() {
 
         val isRememberMeChecked = sharedPreferences.getBoolean(IS_CHECKED, false)
 
-        if (isRememberMeChecked){
+        if (isRememberMeChecked) {
             val email = sharedPreferences.getString(EMAIL, "example.email@gmail.com").toString()
             val username = email.substring(0, email.indexOf('@'))
 
-            val directions = LoginFragmentDirections.toWelcomeFragment(username =  username, email = email)
+            val directions = LoginFragmentDirections.toWelcomeFragment(username = username, email = email)
 
             findNavController().navigate(directions)
         }
@@ -160,7 +161,7 @@ class LoginFragment : Fragment() {
                 putBoolean(IS_CHECKED, isChecked)
             }
 
-            if (isChecked){
+            if (isChecked) {
                 sharedPreferences.edit {
                     putString(EMAIL, email)
                     putString(PASSWORD, password)

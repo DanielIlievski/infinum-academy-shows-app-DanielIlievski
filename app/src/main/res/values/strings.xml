@@ -34,4 +34,7 @@
     <string name="alertDialogMessage">Are you sure?</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
+    <string name="EMAIL">EMAIL</string>
+    <string name="PASSWORD">PASSWORD</string>
+    <string name="IS_CHECKED">IS_CHECKED</string>
 </resources>
