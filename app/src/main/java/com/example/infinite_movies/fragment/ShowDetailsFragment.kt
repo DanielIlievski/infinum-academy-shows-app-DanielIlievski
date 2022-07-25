@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.infinite_movies.R
 import com.example.infinite_movies.adapter.ReviewsAdapter
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
-import com.example.infinite_movies.model.Review
+import com.example.infinite_movies.viewModel.ShowDetailsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowDetailsFragment : Fragment() {
@@ -27,97 +27,7 @@ class ShowDetailsFragment : Fragment() {
 
     private val args by navArgs<ShowDetailsFragmentArgs>()
 
-    private var reviews = listOf(
-        Review(
-            1,
-            "daniel.ilievski",
-            "Great show!",
-            5,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            2,
-            "petar.petrovski",
-            "",
-            2,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            3,
-            "marko.markoski",
-            "I laughed so much!",
-            4,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            4,
-            "ivan.ivanovski",
-            "Relaxing show.",
-            4,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            5,
-            "andrej.krsteski",
-            "It was ok.",
-            3,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            6,
-            "janko.stojanovski",
-            "",
-            1,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            7,
-            "martin.stojceski",
-            "",
-            5,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            8,
-            "viktor.smilevski",
-            "Loved it!",
-            4,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            9,
-            "stefan.dimeski",
-            "I like it.",
-            3,
-            R.drawable.ic_review_profile
-        ),
-        Review(
-            10,
-            "petko.petkoski",
-            "",
-            3,
-            R.drawable.ic_review_profile
-        )
-    )
-
-    private fun getAvgRatingStars(): Float {
-        var stars = 0
-        for (review in reviews) {
-            stars += review.ratingStars
-        }
-        return stars.toFloat() / reviews.count()
-    }
-
-    private fun addRatingBarStats() {
-        binding.ratingBar.rating = getAvgRatingStars()
-
-        binding.ratingBarText.text =
-            getString(
-                R.string.ratingBarText,
-                reviews.count().toString(),
-                String.format("%.2f", getAvgRatingStars())
-            )
-    }
+    private val viewModel by viewModels<ShowDetailsViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentShowDetailsBinding.inflate(inflater, container, false)
@@ -127,6 +37,22 @@ class ShowDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviewsList ->
+            adapter.addAllReviews(reviewsList)
+        }
+
+        viewModel.ratingBarRating.observe(viewLifecycleOwner) { ratingBarRating ->
+            binding.ratingBar.rating = ratingBarRating
+        }
+
+        viewModel.ratingBarText.observe(viewLifecycleOwner) { ratingBarText ->
+            binding.ratingBarText.text = ratingBarText
+        }
+
+        viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
+            adapter.addReview(review)
+        }
 
         initAssignValues()
 
@@ -148,7 +74,7 @@ class ShowDetailsFragment : Fragment() {
         binding.collapseBarImage.setImageResource(imgResId)
         binding.nestedScrollViewText.text = description
 
-        addRatingBarStats()
+        viewModel.addRatingBarStats()
     }
 
     override fun onDestroyView() {
@@ -164,7 +90,7 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initReviewsRecycler() {
-        adapter = ReviewsAdapter(reviews)
+        adapter = ReviewsAdapter(emptyList())
 
         binding.reviewsRecycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -178,7 +104,6 @@ class ShowDetailsFragment : Fragment() {
 
     private fun initLoadReviewsButton() {
         binding.reviews.setOnClickListener {
-            adapter.addAllReviews(reviews)
             if (!binding.reviewsRecycler.isVisible) {
                 binding.reviewsRecycler.isVisible = true
                 binding.reviewEmptyStateText.isVisible = false
@@ -206,7 +131,8 @@ class ShowDetailsFragment : Fragment() {
         dialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submitButton.setOnClickListener {
-            addReviewToList(
+            viewModel.addReviewToList(
+                args.username,
                 bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
                 bottomSheetBinding.reviewRatingBar.rating.toInt()
             )
@@ -214,13 +140,5 @@ class ShowDetailsFragment : Fragment() {
         }
 
         dialog.show()
-    }
-
-    private fun addReviewToList(comment: String, numStars: Int) {
-        val review = Review(reviews.count() + 1, args.username, comment, numStars, R.drawable.ic_review_profile)
-        adapter.addReview(review)
-        reviews = reviews + review
-
-        addRatingBarStats()
     }
 }

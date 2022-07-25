@@ -29,11 +29,11 @@ class ShowsFragment : Fragment() {
 
     private val args by navArgs<ShowsFragmentArgs>()
 
-    private val viewModel by viewModels<ShowsViewModel>()
-
     private lateinit var adapter: ShowsAdapter
 
     private lateinit var sharedPreferences: SharedPreferences
+
+    private val viewModel by viewModels<ShowsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,7 +136,6 @@ class ShowsFragment : Fragment() {
 
     private fun initLoadShowsButton() {
         binding.showEmptyState.setOnClickListener {
-            //adapter.addAllItems(shows)
             if (binding.showsRecycler.isVisible) {
                 binding.showEmptyState.setText(R.string.load)
                 binding.showsRecycler.isVisible = false
