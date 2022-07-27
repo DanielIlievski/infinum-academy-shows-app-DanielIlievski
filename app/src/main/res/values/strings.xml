@@ -40,4 +40,5 @@
     <string name="pick_an_action">Pick an action</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="register">Register</string>
 </resources>
