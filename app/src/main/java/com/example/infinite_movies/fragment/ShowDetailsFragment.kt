@@ -1,16 +1,21 @@
 package com.example.infinite_movies.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.infinite_movies.R
 import com.example.infinite_movies.adapter.ReviewsAdapter
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
@@ -29,10 +34,18 @@ class ShowDetailsFragment : Fragment() {
 
     private val viewModel by viewModels<ShowDetailsViewModel>()
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentShowDetailsBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedPreferences = requireContext().getSharedPreferences("Login", Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -131,11 +144,23 @@ class ShowDetailsFragment : Fragment() {
         dialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submitButton.setOnClickListener {
-            viewModel.addReviewToList(
-                args.username,
-                bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
-                bottomSheetBinding.reviewRatingBar.rating.toInt()
-            )
+            val previewProfilePhoto = sharedPreferences.getString("PROFILE_PHOTO", "")!!.toUri()
+            if (sharedPreferences.getString("PROFILE_PHOTO", "").toString() != "") {
+                viewModel.addReviewToList(
+                    args.username,
+                    bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
+                    bottomSheetBinding.reviewRatingBar.rating.toInt(),
+                    previewProfilePhoto
+                )
+            }
+            else {
+                viewModel.addReviewToList(
+                    args.username,
+                    bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
+                    bottomSheetBinding.reviewRatingBar.rating.toInt(),
+                    Uri.parse("android.resource://com.example.infinite_movies/" + R.drawable.ic_review_profile)
+                )
+            }
             dialog.dismiss()
         }
 

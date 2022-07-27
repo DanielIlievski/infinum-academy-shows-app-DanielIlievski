@@ -1,25 +1,41 @@
 package com.example.infinite_movies.fragment
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toIcon
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.example.infinite_movies.BuildConfig
 import com.example.infinite_movies.R
 import com.example.infinite_movies.adapter.ShowsAdapter
+import com.example.infinite_movies.databinding.DialogChangeProfilePhotoBinding
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
 import com.example.infinite_movies.viewModel.ShowsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.io.File
+
+private const val PHOTO_PICKER_REQUEST_CODE = 200
 
 class ShowsFragment : Fragment() {
 
@@ -35,18 +51,12 @@ class ShowsFragment : Fragment() {
 
     private val viewModel by viewModels<ShowsViewModel>()
 
+    private lateinit var profileSettingsBinding: DialogProfileSettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
-        val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
-        sharedPreferences = EncryptedSharedPreferences.create(
-            getString(R.string.login),
-            masterKeyAlias,
-            requireContext(),
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        sharedPreferences = requireContext().getSharedPreferences("Login", Context.MODE_PRIVATE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -57,6 +67,14 @@ class ShowsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        profileSettingsBinding = DialogProfileSettingsBinding.inflate(layoutInflater)
+
+        binding.profileSettingsButton.setImageResource(R.drawable.ic_review_profile)
+
+        val previewProfilePhoto = sharedPreferences.getString("PROFILE_PHOTO", "")?.toUri()
+        if (previewProfilePhoto.toString() != "")
+            binding.profileSettingsButton.setImageURI(previewProfilePhoto)
 
         viewModel.showsLiveData.observe(viewLifecycleOwner) { showList ->
             adapter.addAllItems(showList)
@@ -84,16 +102,77 @@ class ShowsFragment : Fragment() {
     private fun showProfileSettingsBottomSheet() {
         val dialog = BottomSheetDialog(requireContext())
 
-        val bottomSheetBinding = DialogProfileSettingsBinding.inflate(layoutInflater)
-        dialog.setContentView(bottomSheetBinding.root)
+        profileSettingsBinding = DialogProfileSettingsBinding.inflate(layoutInflater)
+        dialog.setContentView(profileSettingsBinding.root)
 
-        bottomSheetBinding.profileEmail.text = args.email
+        profileSettingsBinding.previewProfilePhoto.setImageURI(sharedPreferences.getString("PROFILE_PHOTO", "")?.toUri())
+        profileSettingsBinding.profileEmail.text = args.email
 
-        bottomSheetBinding.logoutButton.setOnClickListener {
+        profileSettingsBinding.removeProfilePhoto.setOnClickListener {
+            sharedPreferences.edit().remove("PROFILE_PHOTO").apply()
+            dialog.dismiss()
+        }
+
+        profileSettingsBinding.logoutButton.setOnClickListener {
             showLogOutAlertDialog()
             dialog.dismiss()
         }
+
+        profileSettingsBinding.changeProfilePhotoButton.setOnClickListener {
+            takeOrSelectImageBottomSheet()
+            dialog.dismiss()
+        }
+
         dialog.show()
+    }
+
+    private var latestTmpUri: Uri? = null
+
+    private fun takeOrSelectImageBottomSheet() {
+        val dialog = BottomSheetDialog(requireContext())
+
+        val bottomSheetBinding = DialogChangeProfilePhotoBinding.inflate(layoutInflater)
+        dialog.setContentView(bottomSheetBinding.root)
+
+        bottomSheetBinding.cameraLayout.setOnClickListener {
+            takeImage()
+            dialog.dismiss()
+        }
+
+        bottomSheetBinding.galleryLayout.setOnClickListener {
+            //selectImage()
+            Toast.makeText(requireContext(), "Not yet implemented!", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private val takeImageResult = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+        if (isSuccess) {
+            latestTmpUri?.let { uri ->
+                binding.profileSettingsButton.setImageURI(uri)
+                sharedPreferences.edit().putString("PROFILE_PHOTO", uri.toString()).apply()
+            }
+        }
+    }
+
+    private fun takeImage(){
+        lifecycleScope.launchWhenStarted {
+            getTmpFileUri().let { uri ->
+                latestTmpUri = uri
+                takeImageResult.launch(uri)
+            }
+        }
+    }
+
+    private fun getTmpFileUri(): Uri {
+        val tmpFile = File.createTempFile("tmp_image_file", ".png", requireActivity().cacheDir).apply {
+            createNewFile()
+            deleteOnExit()
+        }
+
+        return FileProvider.getUriForFile(requireContext(), "${BuildConfig.APPLICATION_ID}.provider", tmpFile)
     }
 
     private fun showLogOutAlertDialog() {

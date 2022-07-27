@@ -1,6 +1,6 @@
 package com.example.infinite_movies.model
 
-import android.widget.RatingBar
+import android.net.Uri
 import androidx.annotation.DrawableRes
 
 data class Review(
@@ -8,5 +8,5 @@ data class Review(
     val username: String,
     val comment: String,
     val ratingStars: Int,
-    @DrawableRes val imageResourceId: Int
+    val profilePhotoUri: Uri
 )

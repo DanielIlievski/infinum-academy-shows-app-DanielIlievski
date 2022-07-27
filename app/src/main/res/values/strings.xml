@@ -37,4 +37,7 @@
     <string name="EMAIL">EMAIL</string>
     <string name="PASSWORD">PASSWORD</string>
     <string name="IS_CHECKED">IS_CHECKED</string>
+    <string name="pick_an_action">Pick an action</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
 </resources>
