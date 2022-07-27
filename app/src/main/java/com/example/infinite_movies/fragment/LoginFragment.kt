@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.infinite_movies.R
@@ -29,8 +31,9 @@ class LoginFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
+    private val args by navArgs<LoginFragmentArgs>()
+
     private fun isValidEmail(email: String): Boolean {
-        //return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
@@ -70,6 +73,11 @@ class LoginFragment : Fragment() {
 
         val isRememberMeChecked = sharedPreferences.getBoolean(IS_CHECKED, false)
 
+        if (args.registerFlag){
+            binding.loginText.text = getString(R.string.registrationSuccess)
+            binding.registerButton.isVisible = false
+        }
+
         if (isRememberMeChecked) {
             val email = sharedPreferences.getString(EMAIL, "example.email@gmail.com").toString()
             val username = email.substring(0, email.indexOf('@'))
@@ -86,6 +94,12 @@ class LoginFragment : Fragment() {
     }
 
     private fun initListeners() {
+        binding.registerButton.setOnClickListener {
+            val directions = LoginFragmentDirections.toRegisterFragment()
+
+            findNavController().navigate(directions)
+        }
+
         binding.loginButton.setOnClickListener {
             // extract the characters before the @
             val username = binding.emailTextField.editText?.text.toString()

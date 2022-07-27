@@ -41,4 +41,6 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="register">Register</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="registrationSuccess">Registration successful!</string>
 </resources>

@@ -186,7 +186,7 @@ class ShowsFragment : Fragment() {
                 sharedPreferences.edit().remove(getString(R.string.EMAIL)).apply()
                 sharedPreferences.edit().remove(getString(R.string.PASSWORD)).apply()
                 sharedPreferences.edit().putBoolean(getString(R.string.IS_CHECKED), false).apply()
-                val directions = ShowsFragmentDirections.toLoginFragment()
+                val directions = ShowsFragmentDirections.toLoginFragment(false)
 
                 findNavController().navigate(directions)
             }

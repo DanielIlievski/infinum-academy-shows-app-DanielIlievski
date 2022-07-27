@@ -135,7 +135,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="24dp"
-        android:hint="@string/prompt_password"
+        android:hint="@string/repeat_password"
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/white"
         app:boxStrokeErrorColor="@color/red_error"
@@ -157,7 +157,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginButton"
+        android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
