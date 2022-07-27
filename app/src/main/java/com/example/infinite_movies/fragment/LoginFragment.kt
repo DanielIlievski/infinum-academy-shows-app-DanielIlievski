@@ -115,7 +115,7 @@ class LoginFragment : Fragment() {
                 if (isValidEmail(binding.emailTextField.editText?.text.toString()))
                     binding.emailTextField.error = null
                 else
-                    binding.emailTextField.error = "Invalid email!"
+                    binding.emailTextField.error = getString(R.string.emailErrorMessage)
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
                     binding.loginButton.setTextColor(resources.getColor(R.color.purple_background))
@@ -139,7 +139,7 @@ class LoginFragment : Fragment() {
                 if (isPasswordLongEnough(binding.passwordTextField.editText?.text.toString()))
                     binding.passwordTextField.error = null
                 else {
-                    binding.passwordTextField.error = "Password must contain at least 6 characters"
+                    binding.passwordTextField.error = getString(R.string.passwordErrorMessage)
                     // enables password visibility toggle button to be visible when having an error message
                     binding.passwordTextField.errorIconDrawable = null
                 }

@@ -40,4 +40,6 @@
     <string name="pick_an_action">Pick an action</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="passwordErrorMessage">Password must contain at least 6 characters</string>
+    <string name="emailErrorMessage">Invalid email!</string>
 </resources>
