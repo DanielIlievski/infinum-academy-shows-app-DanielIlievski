@@ -19,6 +19,7 @@ import com.example.infinite_movies.databinding.FragmentLoginBinding
 private const val IS_CHECKED = "IS_CHECKED"
 private const val EMAIL = "EMAIL"
 private const val PASSWORD = "PASSWORD"
+private const val FIVE = 5
 
 class LoginFragment : Fragment() {
 
@@ -27,10 +28,6 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var sharedPreferences: SharedPreferences
-
-    companion object {
-        private const val FIVE = 5
-    }
 
     private fun isValidEmail(email: String): Boolean {
         //return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
