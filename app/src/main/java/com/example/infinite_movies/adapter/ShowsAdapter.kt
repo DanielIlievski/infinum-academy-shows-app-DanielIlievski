@@ -1,7 +1,9 @@
 package com.example.infinite_movies.adapter
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.infinite_movies.databinding.ViewShowItemBinding
 import com.example.infinite_movies.model.Show
@@ -30,8 +32,8 @@ class ShowsAdapter(
     inner class ShowViewHolder(private val binding: ViewShowItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Show) {
-            binding.showName.text = item.name
-            binding.showImage.setImageResource(item.imageResourceId)
+            binding.showName.text = item.title
+            binding.showImage.setImageURI(Uri.parse(item.imgUrl))
             binding.showDescription.text = item.description
             binding.cardContainer.setOnClickListener {
                 onItemClickCallback(item)

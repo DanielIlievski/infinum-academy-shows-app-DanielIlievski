@@ -80,11 +80,11 @@ class ShowDetailsFragment : Fragment() {
 
     private fun initAssignValues() {
         val title = args.showName
-        val imgResId = args.showImageResourceId
+        val imgResId = args.showImageUrl
         val description = args.showDescription
 
         binding.showDetailsToolbar.title = title
-        binding.collapseBarImage.setImageResource(imgResId)
+        binding.collapseBarImage.setImageURI(Uri.parse(imgResId))
         binding.nestedScrollViewText.text = description
 
         viewModel.addRatingBarStats()

@@ -1,12 +1,8 @@
 package com.example.infinite_movies.fragment
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +10,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.toIcon
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -91,11 +86,14 @@ class ShowsFragment : Fragment() {
             adapter.addAllItems(showList)
         }
 
+        viewModel.fetchShows()
+
         initListeners()
 
         initShowsRecycler()
 
         initLoadShowsButton()
+
     }
 
     override fun onDestroyView() {
@@ -168,7 +166,7 @@ class ShowsFragment : Fragment() {
         }
     }
 
-    private fun takeImage(){
+    private fun takeImage() {
         lifecycleScope.launchWhenStarted {
             getTmpFileUri().let { uri ->
                 latestTmpUri = uri
@@ -210,10 +208,11 @@ class ShowsFragment : Fragment() {
 
     private fun initShowsRecycler() {
         adapter = ShowsAdapter(emptyList()) { show ->
-            /* Toast is to display text (show.name) when clicked */
-            //Toast.makeText(requireContext(), show.name, Toast.LENGTH_SHORT).show()
+            /* Toast is to display text (show.title) when clicked */
+            //Toast.makeText(requireContext(), show.title, Toast.LENGTH_SHORT).show()
 
-            val directions = ShowsFragmentDirections.toShowDetailsFragment(show.name, show.description, show.imageResourceId, args.username)
+            val directions =
+                ShowsFragmentDirections.toShowDetailsFragment(show.id, show.title, show.description, show.imgUrl, args.username)
 
             findNavController().navigate(directions)
         }

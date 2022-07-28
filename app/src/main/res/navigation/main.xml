@@ -96,16 +96,21 @@
             tools:layout="@layout/fragment_show_details">
 
             <argument
+                android:name="id"
+                app:argType="integer"/>
+
+            <argument
                 android:name="showName"
                 app:argType="string"/>
 
             <argument
                 android:name="showDescription"
-                app:argType="string"/>
+                app:argType="string"
+                app:nullable="true"/>
 
             <argument
-                android:name="showImageResourceId"
-                app:argType="integer"/>
+                android:name="showImageUrl"
+                app:argType="string"/>
 
             <argument
                 android:name="username"
