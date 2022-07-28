@@ -7,10 +7,17 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.infinite_movies.R
+import com.example.infinite_movies.databinding.DialogRegistrationStateBinding
 import com.example.infinite_movies.databinding.FragmentRegisterBinding
+import com.example.infinite_movies.model.RegisterRequest
+import com.example.infinite_movies.networking.ApiModule
+import com.example.infinite_movies.viewModel.RegisterViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 private const val EMAIL = "EMAIL"
 private const val PASSWORD = "PASSWORD"
@@ -40,6 +47,18 @@ class RegisterFragment : Fragment() {
             doPasswordsMatch(binding.passwordTextField.editText?.text.toString(), binding.repeatPasswordTextField.editText?.text.toString())
     }
 
+    private val viewModel by viewModels<RegisterViewModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        ApiModule.initRetrofit(requireContext())
+
+        viewModel.getRegistrationResultLiveData().observe(this) { registrationSuccessful ->
+            displayRegistrationMessage(registrationSuccessful)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
@@ -59,9 +78,10 @@ class RegisterFragment : Fragment() {
 
     private fun initListeners() {
         binding.registerButton.setOnClickListener {
-            val directions = RegisterFragmentDirections.toLoginFragment(registerFlag = true)
-
-            findNavController().navigate(directions)
+            viewModel.onRegisterButtonClicked(
+                username = binding.emailTextField.editText?.text.toString(),
+                password = binding.passwordTextField.editText?.text.toString()
+            )
         }
 
         binding.emailTextField.editText?.addTextChangedListener(object : TextWatcher {
@@ -147,5 +167,44 @@ class RegisterFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun displayRegistrationMessage(isSuccessful: Boolean) {
+        val dialog = BottomSheetDialog(requireContext())
+        val bottomSheetBinding = DialogRegistrationStateBinding.inflate(layoutInflater)
+
+        if (isSuccessful) {
+            bottomSheetBinding.registrationStatePicture.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_outline_check_circle
+                )
+            )
+            bottomSheetBinding.registrationMessage.text = "Registration successful"
+
+            bottomSheetBinding.closeDialogIcon.setOnClickListener {
+                val directions = RegisterFragmentDirections.toLoginFragment(registerFlag = true)
+
+                findNavController().navigate(directions)
+                dialog.dismiss()
+            }
+        } else {
+            bottomSheetBinding.registrationStatePicture.setImageDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.ic_outline_do_not_disturb
+                )
+            )
+            bottomSheetBinding.registrationMessage.text = "Registration not successful"
+
+            bottomSheetBinding.closeDialogIcon.setOnClickListener {
+
+                dialog.dismiss()
+            }
+        }
+
+        dialog.setContentView(bottomSheetBinding.root)
+        dialog.show()
+
     }
 }

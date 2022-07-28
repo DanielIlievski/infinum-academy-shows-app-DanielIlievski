@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,7 +17,14 @@ import androidx.navigation.fragment.navArgs
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.infinite_movies.R
+import com.example.infinite_movies.SessionManager
 import com.example.infinite_movies.databinding.FragmentLoginBinding
+import com.example.infinite_movies.model.LoginRequest
+import com.example.infinite_movies.model.LoginResponse
+import com.example.infinite_movies.networking.ApiModule
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 private const val IS_CHECKED = "IS_CHECKED"
 private const val EMAIL = "EMAIL"
@@ -32,6 +40,8 @@ class LoginFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private val args by navArgs<LoginFragmentArgs>()
+
+    private lateinit var sessionManager: SessionManager
 
     private fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
@@ -59,6 +69,10 @@ class LoginFragment : Fragment() {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+
+        ApiModule.initRetrofit(requireContext())
+
+        sessionManager = SessionManager(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -73,7 +87,7 @@ class LoginFragment : Fragment() {
 
         val isRememberMeChecked = sharedPreferences.getBoolean(IS_CHECKED, false)
 
-        if (args.registerFlag){
+        if (args.registerFlag) {
             binding.loginText.text = getString(R.string.registrationSuccess)
             binding.registerButton.isVisible = false
         }
@@ -107,9 +121,39 @@ class LoginFragment : Fragment() {
 
             val email = binding.emailTextField.editText?.text.toString()
 
-            val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
+            val password = binding.passwordTextField.editText?.text.toString()
 
-            findNavController().navigate(directions)
+            val loginRequest = LoginRequest(
+                email = email,
+                password = password
+            )
+
+            ApiModule.retrofit.login(loginRequest)
+                .enqueue(object : Callback<LoginResponse> {
+                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                        val accessToken = response.headers()["access-token"].toString()
+                        val client = response.headers()["client"].toString()
+                        val uid = response.headers()["uid"].toString()
+
+                        sessionManager.saveAuthToken(accessToken)
+                        sessionManager.saveClient(client)
+                        sessionManager.saveUid(uid)
+
+                        if (response.code() == 201) {
+                            val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
+
+                            findNavController().navigate(directions)
+                        }
+                        else if (response.code() == 401){
+                            Toast.makeText(requireContext(), "Invalid login credentials. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
         }
 
         // disable and enable the Login button when email and password conditions are fulfilled

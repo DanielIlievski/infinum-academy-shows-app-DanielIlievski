@@ -27,6 +27,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.infinite_movies.BuildConfig
 import com.example.infinite_movies.R
+import com.example.infinite_movies.SessionManager
 import com.example.infinite_movies.adapter.ShowsAdapter
 import com.example.infinite_movies.databinding.DialogChangeProfilePhotoBinding
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
@@ -34,8 +35,6 @@ import com.example.infinite_movies.databinding.FragmentShowsBinding
 import com.example.infinite_movies.viewModel.ShowsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
-
-private const val PHOTO_PICKER_REQUEST_CODE = 200
 
 class ShowsFragment : Fragment() {
 
@@ -53,10 +52,22 @@ class ShowsFragment : Fragment() {
 
     private lateinit var profileSettingsBinding: DialogProfileSettingsBinding
 
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPreferences = requireContext().getSharedPreferences("Login", Context.MODE_PRIVATE)
+        val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
+        val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
+        sharedPreferences = EncryptedSharedPreferences.create(
+            getString(R.string.login),
+            masterKeyAlias,
+            requireContext(),
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        sessionManager = SessionManager(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -183,8 +194,7 @@ class ShowsFragment : Fragment() {
             setMessage(R.string.alertDialogMessage)
             setIcon(android.R.drawable.ic_dialog_alert)
             setPositiveButton(R.string.Yes) { dialogInterface, which ->
-                sharedPreferences.edit().remove(getString(R.string.EMAIL)).apply()
-                sharedPreferences.edit().remove(getString(R.string.PASSWORD)).apply()
+                sessionManager.deleteHeaders()
                 sharedPreferences.edit().putBoolean(getString(R.string.IS_CHECKED), false).apply()
                 val directions = ShowsFragmentDirections.toLoginFragment(false)
 
