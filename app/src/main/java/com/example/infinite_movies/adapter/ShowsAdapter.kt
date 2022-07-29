@@ -1,10 +1,13 @@
 package com.example.infinite_movies.adapter
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.infinite_movies.R
 import com.example.infinite_movies.databinding.ViewShowItemBinding
 import com.example.infinite_movies.model.Show
 
@@ -33,7 +36,12 @@ class ShowsAdapter(
 
         fun bind(item: Show) {
             binding.showName.text = item.title
-            binding.showImage.setImageURI(Uri.parse(item.imgUrl))
+            Glide.with(binding.root.context)
+                .load(item.imgUrl)
+                .override(300,200)
+                .placeholder(R.drawable.ic_review_profile)
+                .into(binding.showImage)
+            Log.d("IMAGE", item.imgUrl)
             binding.showDescription.text = item.description
             binding.cardContainer.setOnClickListener {
                 onItemClickCallback(item)

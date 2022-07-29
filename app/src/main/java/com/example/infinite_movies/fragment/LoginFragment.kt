@@ -131,13 +131,13 @@ class LoginFragment : Fragment() {
             ApiModule.retrofit.login(loginRequest)
                 .enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                        val accessToken = response.headers()["access-token"].toString()
-                        val client = response.headers()["client"].toString()
-                        val uid = response.headers()["uid"].toString()
-
-                        sessionManager.saveAuthToken(accessToken)
-                        sessionManager.saveClient(client)
-                        sessionManager.saveUid(uid)
+//                        val accessToken = response.headers()["access-token"].toString()
+//                        val client = response.headers()["client"].toString()
+//                        val uid = response.headers()["uid"].toString()
+//
+//                        sessionManager.saveAuthToken(accessToken)
+//                        sessionManager.saveClient(client)
+//                        sessionManager.saveUid(uid)
 
                         if (response.code() == 201) {
                             val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
@@ -145,7 +145,14 @@ class LoginFragment : Fragment() {
                             findNavController().navigate(directions)
                         }
                         else if (response.code() == 401){
-                            Toast.makeText(requireContext(), "Invalid login credentials. Please try again.", Toast.LENGTH_SHORT).show()
+                            if (response.body() !=  null && !response.body()?.errors.isNullOrEmpty()){
+                                val error = response.body()?.errors!![0]
+                                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                Toast.makeText(requireContext(), "Message", Toast.LENGTH_SHORT).show()
+                            }
+
                         }
                     }
 

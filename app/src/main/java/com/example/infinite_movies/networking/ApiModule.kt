@@ -7,6 +7,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 object ApiModule {
@@ -28,8 +29,12 @@ object ApiModule {
     }
 
     private fun okhttpClient(context: Context): OkHttpClient {
+        val logging: HttpLoggingInterceptor = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(context))
+//            .addInterceptor(AuthInterceptor(context))
+            .addInterceptor(ChuckerInterceptor.Builder(context).build())
+            .addInterceptor(logging)
             .build()
     }
 }

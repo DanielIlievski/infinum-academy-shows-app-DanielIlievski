@@ -1,6 +1,7 @@
 package com.example.infinite_movies.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -38,8 +39,9 @@ class ReviewsAdapter(
             binding.reviewUsername.text = item.username
             binding.starRatingText.text = item.ratingStars.toString()
 
-            if (binding.reviewComment.text.equals("")) {
+            if (item.comment.isEmpty()) {
                 binding.reviewComment.text = item.comment
+                binding.reviewComment.visibility = View.GONE
                 binding.reviewComment.isVisible = false
             } else
                 binding.reviewComment.text = item.comment

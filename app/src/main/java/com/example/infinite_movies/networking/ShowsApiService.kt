@@ -20,9 +20,15 @@ interface ShowsApiService {
     @POST("/users/sign_in")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
-//    @GET("/shows/{show_id}/reviews")
-//    fun fetchReviews(@Path("show_id") showId: Number): Callback<ReviewsResponse>
-
     @GET("/shows")
     fun fetchShows(): Call<ShowsResponse>
+
+    //    @GET("/shows/{id}")
+    //    fun fetchShow(@Path("id") showId: Int): Call<Show>
+
+//    @GET("/shows/{show_id}/reviews")
+//    fun fetchReviews(@Path("show_id") showId: Int): Call<ReviewsResponse>
+
+    //    @GET("/reviews")
+    //    fun createReview(@Body request: ReviewRequest): Call<Review>
 }
