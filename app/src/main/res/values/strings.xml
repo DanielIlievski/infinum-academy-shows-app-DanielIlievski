@@ -26,4 +26,20 @@
     <string name="ratingBarText">%1$s reviews, %2$s average</string>
     <string name="comment">Comment</string>
     <string name="submit">Submit</string>
+    <string name="profile_email">%s</string>
+    <string name="change_profile_photo">Change profile photo</string>
+    <string name="logout">Logout</string>
+    <string name="remember_me">Remember me</string>
+    <string name="alertDialogTitle">Confirm Log out</string>
+    <string name="alertDialogMessage">Are you sure?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="EMAIL">EMAIL</string>
+    <string name="PASSWORD">PASSWORD</string>
+    <string name="IS_CHECKED">IS_CHECKED</string>
+    <string name="pick_an_action">Pick an action</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="passwordErrorMessage">Password must contain at least 6 characters</string>
+    <string name="emailErrorMessage">Invalid email!</string>
 </resources>

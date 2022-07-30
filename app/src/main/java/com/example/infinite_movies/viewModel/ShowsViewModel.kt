@@ -1,25 +1,12 @@
-package com.example.infinite_movies
+package com.example.infinite_movies.viewModel
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.infinite_movies.databinding.FragmentShowsBinding
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.example.infinite_movies.R
 import com.example.infinite_movies.model.Show
 
-class ShowsFragment : Fragment() {
-
-    private var _binding: FragmentShowsBinding? = null
-
-    private val binding get() = _binding!!
-
-    private val args by navArgs<ShowsFragmentArgs>()
+class ShowsViewModel : ViewModel() {
 
     private val shows = listOf(
         Show(
@@ -96,65 +83,12 @@ class ShowsFragment : Fragment() {
         ),
     )
 
-    private lateinit var adapter: ShowsAdapter
+    private val _showsLiveData = MutableLiveData<List<Show>>()
+    val showsLiveData: LiveData<List<Show>> = _showsLiveData
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentShowsBinding.inflate(inflater, container, false)
-
-        return binding.root
+    init {
+        _showsLiveData.value = shows
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        initListeners()
-
-        initShowsRecycler()
-
-        initLoadShowsButton()
-    }
-
-    private fun initListeners() {
-        binding.logoutButton.setOnClickListener {
-            val directions = ShowsFragmentDirections.toLoginFragment()
-
-            findNavController().navigate(directions)
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _binding = null
-    }
-
-    private fun initShowsRecycler() {
-        adapter = ShowsAdapter(shows) { show ->
-            /* Toast is to display text (show.name) when clicked */
-            //Toast.makeText(requireContext(), show.name, Toast.LENGTH_SHORT).show()
-
-            val directions = ShowsFragmentDirections.toShowDetailsFragment(show.name, show.description, show.imageResourceId, args.username)
-
-            findNavController().navigate(directions)
-        }
-
-        binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-        binding.showsRecycler.adapter = adapter
-    }
-
-    private fun initLoadShowsButton() {
-        binding.showEmptyState.setOnClickListener {
-            //adapter.addAllItems(shows)
-            if (binding.showsRecycler.isVisible) {
-                binding.showEmptyState.setText(R.string.load)
-                binding.showsRecycler.isVisible = false
-                binding.emptyStateLayout.isVisible = true
-            } else {
-                binding.showEmptyState.setText(R.string.hide)
-                binding.showsRecycler.isVisible = true
-                binding.emptyStateLayout.isVisible = false
-            }
-        }
-    }
 }

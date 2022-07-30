@@ -130,6 +130,18 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <CheckBox
+        android:id="@+id/rememberMeCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextField"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="25dp"
+        android:buttonTint="@color/white"
+        android:text="@string/remember_me"
+        android:textColor="@color/white"
+        android:textSize="17sp"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
@@ -137,12 +149,16 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
+        app:background="?attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
         android:backgroundTint="#BBBBBB"
         android:enabled="false"
         android:text="@string/login"
         android:textColor="@color/white"
         android:textFontWeight="900"
         android:textSize="17sp"
+        android:focusable="true"
         app:cornerRadius="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

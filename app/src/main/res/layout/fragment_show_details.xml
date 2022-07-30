@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ShowDetailsFragment">
+    tools:context=".fragment.ShowDetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/collapsing_app_bar"
@@ -49,7 +49,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -128,10 +128,13 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="24dp"
+            app:background="?attr/selectableItemBackground"
+            android:clickable="true"
             android:paddingVertical="12dp"
             android:text="@string/write_a_review"
             android:textAllCaps="false"
             android:textStyle="bold"
+            android:focusable="true"
             app:cornerRadius="22dp"
             app:elevation="20dp"/>
     </RelativeLayout>
