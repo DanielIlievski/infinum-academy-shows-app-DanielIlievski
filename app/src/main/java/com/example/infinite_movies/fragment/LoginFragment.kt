@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -88,7 +89,7 @@ class LoginFragment : Fragment() {
         val isRememberMeChecked = sharedPreferences.getBoolean(IS_CHECKED, false)
 
         if (args.registerFlag) {
-            binding.loginText.text = getString(R.string.registrationSuccess)
+            binding.loginText.text = getString(R.string.registration_success)
             binding.registerButton.isVisible = false
         }
 
@@ -143,21 +144,13 @@ class LoginFragment : Fragment() {
                             val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
 
                             findNavController().navigate(directions)
-                        }
-                        else if (response.code() == 401){
-//                            if (response.body() !=  null && !response.body()?.errors.isNullOrEmpty()){
-//                                val error = response.body()?.errors!![0]
-                                Toast.makeText(requireContext(), "Invalid login credentials. Please try again.", Toast.LENGTH_SHORT).show()
-//                            }
-//                            else {
-//                                Toast.makeText(requireContext(), "Message", Toast.LENGTH_SHORT).show()
-//                            }
+                        } else if (response.code() == 401) {
 
+                            Toast.makeText(requireContext(), getString(R.string.invalid_login_credentials), Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                        TODO("Not yet implemented")
                     }
 
                 })
@@ -177,12 +170,12 @@ class LoginFragment : Fragment() {
                 if (isValidEmail(binding.emailTextField.editText?.text.toString()))
                     binding.emailTextField.error = null
                 else
-                    binding.emailTextField.error = "Invalid email!"
+                    binding.emailTextField.error = getString(R.string.invalid_email)
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(resources.getColor(R.color.purple_background))
+                    binding.loginButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                    binding.loginButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }
@@ -201,15 +194,15 @@ class LoginFragment : Fragment() {
                 if (isPasswordLongEnough(binding.passwordTextField.editText?.text.toString()))
                     binding.passwordTextField.error = null
                 else {
-                    binding.passwordTextField.error = "Password must contain at least 6 characters"
+                    binding.passwordTextField.error = getString(R.string.password_condition)
                     // enables password visibility toggle button to be visible when having an error message
                     binding.passwordTextField.errorIconDrawable = null
                 }
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(resources.getColor(R.color.purple_background))
+                    binding.loginButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                    binding.loginButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }

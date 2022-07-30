@@ -1,24 +1,23 @@
 package com.example.infinite_movies
 
 import android.content.Context
-import androidx.core.content.edit
 
 private const val USER_TOKEN = "USER_TOKEN"
 private const val UID = "UID"
 private const val CLIENT = "CLIENT"
 
-class SessionManager (context: Context) {
+class SessionManager(context: Context) {
 
     private val sharedPreferences = context.getSharedPreferences("Login", Context.MODE_PRIVATE)
 
-    fun saveAuthToken (token: String) {
+    fun saveAuthToken(token: String) {
         sharedPreferences
             .edit()
             .putString(USER_TOKEN, token)
             .apply()
     }
 
-    fun saveClient (client: String) {
+    fun saveClient(client: String) {
         sharedPreferences
             .edit()
             .putString(CLIENT, client)
@@ -38,15 +37,15 @@ class SessionManager (context: Context) {
         sharedPreferences.edit().remove(UID).apply()
     }
 
-    fun fetchAuthToken (): String? {
+    fun fetchAuthToken(): String? {
         return sharedPreferences.getString(USER_TOKEN, null)
     }
 
-    fun fetchClient (): String? {
+    fun fetchClient(): String? {
         return sharedPreferences.getString(CLIENT, null)
     }
 
-    fun fetchUid (): String? {
+    fun fetchUid(): String? {
         return sharedPreferences.getString(UID, null)
     }
 }

@@ -122,6 +122,7 @@ class ShowsFragment : Fragment() {
 
         profileSettingsBinding.removeProfilePhoto.setOnClickListener {
             sharedPreferences.edit().remove("PROFILE_PHOTO").apply()
+            binding.profileSettingsButton.setImageResource(R.drawable.ic_review_profile)
             dialog.dismiss()
         }
 

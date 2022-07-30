@@ -14,13 +14,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.infinite_movies.R
 import com.example.infinite_movies.databinding.DialogRegistrationStateBinding
 import com.example.infinite_movies.databinding.FragmentRegisterBinding
-import com.example.infinite_movies.model.RegisterRequest
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.RegisterViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
-private const val EMAIL = "EMAIL"
-private const val PASSWORD = "PASSWORD"
 private const val FIVE = 5
 
 class RegisterFragment : Fragment() {
@@ -97,12 +94,12 @@ class RegisterFragment : Fragment() {
                 if (isValidEmail(binding.emailTextField.editText?.text.toString()))
                     binding.emailTextField.error = null
                 else
-                    binding.emailTextField.error = "Invalid email!"
+                    binding.emailTextField.error = getString(R.string.invalid_email)
                 if (binding.registerButton.isEnabled) {
                     binding.registerButton.setBackgroundColor(Color.WHITE)
-                    binding.registerButton.setTextColor(resources.getColor(R.color.purple_background))
+                    binding.registerButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_background))
                 } else {
-                    binding.registerButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                    binding.registerButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_disabled))
                     binding.registerButton.setTextColor(Color.WHITE)
                 }
             }
@@ -121,15 +118,15 @@ class RegisterFragment : Fragment() {
                 if (isPasswordLongEnough(binding.passwordTextField.editText?.text.toString()))
                     binding.passwordTextField.error = null
                 else {
-                    binding.passwordTextField.error = "Password must contain at least 6 characters"
+                    binding.passwordTextField.error = getString(R.string.password_condition)
                     // enables password visibility toggle button to be visible when having an error message
                     binding.passwordTextField.errorIconDrawable = null
                 }
                 if (binding.registerButton.isEnabled) {
                     binding.registerButton.setBackgroundColor(Color.WHITE)
-                    binding.registerButton.setTextColor(resources.getColor(R.color.purple_background))
+                    binding.registerButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_background))
                 } else {
-                    binding.registerButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                    binding.registerButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_disabled))
                     binding.registerButton.setTextColor(Color.WHITE)
                 }
             }
@@ -153,16 +150,16 @@ class RegisterFragment : Fragment() {
                     binding.repeatPasswordTextField.error = null
                     binding.passwordTextField.error = null
                 } else {
-                    binding.passwordTextField.error = "Passwords do not match!"
-                    binding.repeatPasswordTextField.error = "Passwords do not match!"
+                    binding.passwordTextField.error = getString(R.string.passwords_mismatch)
+                    binding.repeatPasswordTextField.error = getString(R.string.passwords_mismatch)
                     // enables password visibility toggle button to be visible when having an error message
                     binding.repeatPasswordTextField.errorIconDrawable = null
                 }
                 if (binding.registerButton.isEnabled) {
                     binding.registerButton.setBackgroundColor(Color.WHITE)
-                    binding.registerButton.setTextColor(resources.getColor(R.color.purple_background))
+                    binding.registerButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_background))
                 } else {
-                    binding.registerButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                    binding.registerButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_disabled))
                     binding.registerButton.setTextColor(Color.WHITE)
                 }
             }
@@ -180,7 +177,7 @@ class RegisterFragment : Fragment() {
                     R.drawable.ic_outline_check_circle
                 )
             )
-            bottomSheetBinding.registrationMessage.text = "Registration successful"
+            bottomSheetBinding.registrationMessage.text = getString(R.string.registration_success)
 
             bottomSheetBinding.closeDialogIcon.setOnClickListener {
                 val directions = RegisterFragmentDirections.toLoginFragment(registerFlag = true)
@@ -195,7 +192,7 @@ class RegisterFragment : Fragment() {
                     R.drawable.ic_outline_do_not_disturb
                 )
             )
-            bottomSheetBinding.registrationMessage.text = "Registration not successful"
+            bottomSheetBinding.registrationMessage.text = getString(R.string.registration_fail)
 
             bottomSheetBinding.closeDialogIcon.setOnClickListener {
 

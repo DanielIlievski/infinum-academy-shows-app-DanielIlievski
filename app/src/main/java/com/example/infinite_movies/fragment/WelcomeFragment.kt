@@ -2,6 +2,7 @@ package com.example.infinite_movies.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,7 @@ class WelcomeFragment : Fragment() {
         binding.welcomeText.text = getString(R.string.welcome_text, args.username)
 
         //switching automatically to ShowsActivity
-        val mHandler = Handler()
+        val mHandler = Handler(Looper.getMainLooper())
         mHandler.postDelayed(object : Runnable {
             override fun run() {
                 val directions = WelcomeFragmentDirections.toNavigation(args.username, args.email)

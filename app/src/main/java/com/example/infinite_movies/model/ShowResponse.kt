@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ShowResponse (
+data class ShowResponse(
     @SerialName("show") val show: Show,
 )

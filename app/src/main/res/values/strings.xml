@@ -42,5 +42,10 @@
     <string name="gallery">Gallery</string>
     <string name="register">Register</string>
     <string name="repeat_password">Repeat password</string>
-    <string name="registrationSuccess">Registration successful!</string>
+    <string name="registration_success">Registration successful!</string>
+    <string name="registration_fail">Registration not successful!</string>
+    <string name="passwords_mismatch">Passwords do not match!</string>
+    <string name="invalid_email">Invalid email!</string>
+    <string name="password_condition">Password must contain at least 6 characters!</string>
+    <string name="invalid_login_credentials">Invalid login credentials. Please try again.</string>
 </resources>

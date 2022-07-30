@@ -10,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel: ViewModel() {
+class RegisterViewModel : ViewModel() {
 
     private val registrationResultLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
 
@@ -20,13 +20,13 @@ class RegisterViewModel: ViewModel() {
 
     fun onRegisterButtonClicked(username: String, password: String) {
 
-        val registerRequest = RegisterRequest (
+        val registerRequest = RegisterRequest(
             email = username,
             password = password,
             passwordConfirmation = password
         )
         ApiModule.retrofit.register(registerRequest)
-            .enqueue(object: Callback<RegisterResponse> {
+            .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                     registrationResultLiveData.value = response.isSuccessful
                 }

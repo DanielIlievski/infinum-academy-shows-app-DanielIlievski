@@ -1,12 +1,9 @@
 package com.example.infinite_movies.viewModel
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.infinite_movies.R
 import com.example.infinite_movies.model.Show
-import com.example.infinite_movies.model.ShowResponse
 import com.example.infinite_movies.model.ShowsResponse
 import com.example.infinite_movies.networking.ApiModule
 import retrofit2.Call
@@ -22,7 +19,7 @@ class ShowsViewModel : ViewModel() {
         ApiModule.retrofit.fetchShows()
             .enqueue(object : Callback<ShowsResponse> {
                 override fun onResponse(call: Call<ShowsResponse>, response: Response<ShowsResponse>) {
-                    if(response.code() == 200) {
+                    if (response.code() == 200) {
                         _showsLiveData.value = response.body()?.shows
                     }
                 }
@@ -32,7 +29,6 @@ class ShowsViewModel : ViewModel() {
 
             })
     }
-
 
 
 }

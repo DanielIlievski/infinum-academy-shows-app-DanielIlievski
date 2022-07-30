@@ -15,7 +15,6 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-// TODO define all functions required to communicate with the server
 interface ShowsApiService {
 
     @POST("/users")

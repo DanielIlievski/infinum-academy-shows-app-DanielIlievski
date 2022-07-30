@@ -46,7 +46,7 @@ class ShowDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPreferences = requireContext().getSharedPreferences("Login", Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.login), Context.MODE_PRIVATE)
 
         ApiModule.initRetrofit(requireContext())
     }
