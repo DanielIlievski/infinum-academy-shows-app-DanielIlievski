@@ -33,12 +33,10 @@ class WelcomeFragment : Fragment() {
 
         //switching automatically to ShowsActivity
         val mHandler = Handler(Looper.getMainLooper())
-        mHandler.postDelayed(object : Runnable {
-            override fun run() {
-                val directions = WelcomeFragmentDirections.toNavigation(args.username, args.email)
+        mHandler.postDelayed({
+            val directions = WelcomeFragmentDirections.toNavigation(args.username, args.email)
 
-                findNavController().navigate(directions)
-            }
+            findNavController().navigate(directions)
         }, 2000)
     }
 
