@@ -23,7 +23,7 @@
     <string name="review_example">This show was a complete masterpiece</string>
     <string name="username">neil.the.navy.seal</string>
     <string name="no_reviews_yet">No reviews yet</string>
-    <string name="ratingBarText">%1$s reviews, %2$s average</string>
+    <string name="ratingBarText">%1$d reviews, %2$.2f average</string>
     <string name="comment">Comment</string>
     <string name="submit">Submit</string>
     <string name="profile_email">%s</string>

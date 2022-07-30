@@ -1,12 +1,14 @@
 package com.example.infinite_movies.model
 
-import android.net.Uri
-import androidx.annotation.DrawableRes
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Review(
-    val id: Int,
-    val username: String,
-    val comment: String,
-    val ratingStars: Int,
-    val profilePhotoUri: Uri
+
+    @SerialName("id") val id: Int,
+    @SerialName("comment") val comment: String,
+    @SerialName("rating") val rating: Int,
+    @SerialName("show_id") val showId: Int,
+    @SerialName("user") val user: User
 )

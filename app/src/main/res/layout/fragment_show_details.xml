@@ -16,6 +16,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/showDetailsCollapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="240dp"
             app:contentScrim="?attr/colorPrimary"

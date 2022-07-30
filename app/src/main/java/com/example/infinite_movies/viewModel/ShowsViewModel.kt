@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.infinite_movies.R
 import com.example.infinite_movies.model.Show
+import com.example.infinite_movies.model.ShowResponse
 import com.example.infinite_movies.model.ShowsResponse
 import com.example.infinite_movies.networking.ApiModule
 import retrofit2.Call
@@ -31,5 +32,7 @@ class ShowsViewModel : ViewModel() {
 
             })
     }
+
+
 
 }

@@ -4,7 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ReviewsResponse (
-    @SerialName("reviews") val reviews: List<Review>,
-    @SerialName("meta") val meta: Meta
-    )
+data class ReviewResponse (
+    @SerialName("review") val review: Review
+)

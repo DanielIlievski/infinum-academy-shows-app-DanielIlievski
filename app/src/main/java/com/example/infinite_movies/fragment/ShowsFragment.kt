@@ -27,6 +27,7 @@ import com.example.infinite_movies.adapter.ShowsAdapter
 import com.example.infinite_movies.databinding.DialogChangeProfilePhotoBinding
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
+import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.ShowsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
@@ -61,6 +62,8 @@ class ShowsFragment : Fragment() {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+
+        ApiModule.initRetrofit(requireContext())
 
         sessionManager = SessionManager(requireContext())
     }

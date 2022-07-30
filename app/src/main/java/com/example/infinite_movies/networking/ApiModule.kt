@@ -29,10 +29,10 @@ object ApiModule {
     }
 
     private fun okhttpClient(context: Context): OkHttpClient {
-        val logging: HttpLoggingInterceptor = HttpLoggingInterceptor()
+        val logging = HttpLoggingInterceptor()
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
-//            .addInterceptor(AuthInterceptor(context))
+            .addInterceptor(AuthInterceptor(context))
             .addInterceptor(ChuckerInterceptor.Builder(context).build())
             .addInterceptor(logging)
             .build()
