@@ -80,7 +80,7 @@ class ShowDetailsFragment : Fragment() {
             binding.showDetailsCollapsingToolbar.title = title
             Glide.with(binding.root.context)
                 .load(imgUrl)
-                .placeholder(R.drawable.ic_review_profile)
+                .placeholder(R.drawable.ic_progress_spinner_white)
                 .into(binding.collapseBarImage)
             binding.nestedScrollViewText.text = description
             binding.ratingBar.rating = show.avgRating!!

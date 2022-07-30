@@ -36,6 +36,7 @@ class ShowsAdapter(
             binding.showName.text = item.title
             Glide.with(binding.root.context)
                 .load(item.imgUrl)
+                .override(1400)
                 .placeholder(R.drawable.ic_progress_spinner)
                 .into(binding.showImage)
             binding.showDescription.text = item.description
