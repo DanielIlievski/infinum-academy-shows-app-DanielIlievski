@@ -29,7 +29,7 @@ class ShowDetailsFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private lateinit var adapter: ReviewsAdapter
+    private lateinit var reviewsAdapter: ReviewsAdapter
 
     private val args by navArgs<ShowDetailsFragmentArgs>()
 
@@ -89,11 +89,11 @@ class ShowDetailsFragment : Fragment() {
         }
 
         viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviewsList ->
-            adapter.addAllReviews(reviewsList)
+            reviewsAdapter.addAllReviews(reviewsList)
         }
 
         viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
-            adapter.addReview(review)
+            reviewsAdapter.addReview(review)
         }
     }
 
@@ -110,12 +110,12 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initReviewsRecycler() {
-        adapter = ReviewsAdapter(emptyList())
+        reviewsAdapter = ReviewsAdapter(emptyList())
 
         binding.reviewsRecycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        binding.reviewsRecycler.adapter = adapter
+        binding.reviewsRecycler.adapter = reviewsAdapter
 
         binding.reviewsRecycler.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
