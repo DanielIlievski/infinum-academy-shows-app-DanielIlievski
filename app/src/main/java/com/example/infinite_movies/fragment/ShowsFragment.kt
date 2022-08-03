@@ -23,12 +23,15 @@ import androidx.security.crypto.MasterKeys
 import com.example.infinite_movies.BuildConfig
 import com.example.infinite_movies.R
 import com.example.infinite_movies.SessionManager
+import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.adapter.ShowsAdapter
 import com.example.infinite_movies.databinding.DialogChangeProfilePhotoBinding
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
+import com.example.infinite_movies.model.Show
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.ShowsViewModel
+import com.example.infinite_movies.viewModelFactory.ShowsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
 
@@ -40,11 +43,13 @@ class ShowsFragment : Fragment() {
 
     private val args by navArgs<ShowsFragmentArgs>()
 
-    private lateinit var adapter: ShowsAdapter
+    private lateinit var showsAdapter: ShowsAdapter
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val viewModel by viewModels<ShowsViewModel>()
+    private val viewModel: ShowsViewModel by viewModels {
+        ShowsViewModelFactory((requireActivity().application as ShowApplication).showsDatabase)
+    }
 
     private lateinit var profileSettingsBinding: DialogProfileSettingsBinding
 
@@ -85,11 +90,30 @@ class ShowsFragment : Fragment() {
         if (previewProfilePhoto.toString() != "")
             binding.profileSettingsButton.setImageURI(previewProfilePhoto)
 
-        viewModel.showsLiveData.observe(viewLifecycleOwner) { showList ->
-            adapter.addAllItems(showList)
+        if (viewModel.isNetworkAvailable(requireContext())) {
+            viewModel.showsLiveData.observe(viewLifecycleOwner) { showList ->
+                showsAdapter.addAllItems(showList)
+            }
+            viewModel.fetchShowsFromApi()
+        } else {
+            viewModel.fetchShowsFromDatabase().observe(viewLifecycleOwner) { showEntityList ->
+                showsAdapter.addAllItems(showEntityList.map { showEntity ->
+                    Show(
+                        showEntity.id,
+                        showEntity.avgRating,
+                        showEntity.description,
+                        showEntity.imgUrl,
+                        showEntity.numberOfReviews,
+                        showEntity.title
+                    )
+                })
+            }
         }
-
-        viewModel.fetchShows()
+        //        else {
+        //            binding.showEmptyState.isVisible = false
+        //            binding.showsRecycler.isVisible = false
+        //            binding.emptyStateLayout.isVisible = true
+        //        }
 
         initListeners()
 
@@ -211,7 +235,7 @@ class ShowsFragment : Fragment() {
     }
 
     private fun initShowsRecycler() {
-        adapter = ShowsAdapter(emptyList()) { show ->
+        showsAdapter = ShowsAdapter(emptyList()) { show ->
             /* Toast is to display text (show.title) when clicked */
             //Toast.makeText(requireContext(), show.title, Toast.LENGTH_SHORT).show()
 
@@ -223,7 +247,7 @@ class ShowsFragment : Fragment() {
 
         binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        binding.showsRecycler.adapter = adapter
+        binding.showsRecycler.adapter = showsAdapter
     }
 
     private fun initLoadShowsButton() {

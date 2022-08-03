@@ -9,6 +9,6 @@ data class Show(
     @SerialName("average_rating") val avgRating: Float?,
     @SerialName("description") val description: String?,
     @SerialName("image_url") val imgUrl: String,
-    @SerialName("no_of_reviews") val numberOfReviews: Int = 0,
+    @SerialName("no_of_reviews") val numberOfReviews: Int,
     @SerialName("title") val title: String
 )

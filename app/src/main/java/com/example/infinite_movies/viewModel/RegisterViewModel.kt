@@ -3,14 +3,19 @@ package com.example.infinite_movies.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.infinite_movies.database.ShowsDatabase
 import com.example.infinite_movies.model.RegisterRequest
 import com.example.infinite_movies.model.RegisterResponse
+import com.example.infinite_movies.model.User
 import com.example.infinite_movies.networking.ApiModule
+import java.util.concurrent.Executors
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+    private val database: ShowsDatabase
+) : ViewModel() {
 
     private val registrationResultLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
 

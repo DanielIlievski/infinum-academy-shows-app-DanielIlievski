@@ -1,30 +1,57 @@
 package com.example.infinite_movies.viewModel
 
+import android.content.Context
+import android.net.ConnectivityManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.infinite_movies.database.ShowsDatabase
+import com.example.infinite_movies.database.entity.ReviewEntity
+import com.example.infinite_movies.database.entity.ShowEntity
 import com.example.infinite_movies.model.Review
 import com.example.infinite_movies.model.ReviewRequest
 import com.example.infinite_movies.model.ReviewResponse
 import com.example.infinite_movies.model.ReviewsResponse
 import com.example.infinite_movies.model.Show
 import com.example.infinite_movies.model.ShowResponse
+import com.example.infinite_movies.model.User
 import com.example.infinite_movies.networking.ApiModule
+import java.util.concurrent.Executors
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShowDetailsViewModel : ViewModel() {
+class ShowDetailsViewModel(
+    private val database: ShowsDatabase
+) : ViewModel() {
 
     private val _reviewsLiveData = MutableLiveData<List<Review>>()
     val reviewsLiveData: LiveData<List<Review>> = _reviewsLiveData
 
-    fun fetchReviews(showId: Int) {
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java)
+        val activeNetworkInfo = connectivityManager?.activeNetwork
+        return activeNetworkInfo != null
+    }
+
+    fun reviewListToReviewEntityList(reviewList: List<Review>?): List<ReviewEntity>? {
+        return reviewList?.map { review ->
+            ReviewEntity(review.id, review.comment, review.rating, review.showId, review.user)
+        }
+    }
+
+    fun fetchReviewsFromApi(showId: Int) {
         ApiModule.retrofit.fetchReviews(showId)
             .enqueue(object : Callback<ReviewsResponse> {
                 override fun onResponse(call: Call<ReviewsResponse>, response: Response<ReviewsResponse>) {
                     if (response.code() == 200) {
                         _reviewsLiveData.value = response.body()?.reviews
+                        Executors.newSingleThreadExecutor().execute() {
+                            reviewListToReviewEntityList(response.body()?.reviews)?.let { reviewEntityList ->
+                                database.reviewDao().insertAllReviews(reviewEntityList)
+                            }
+                        }
                     }
                 }
 
@@ -32,6 +59,11 @@ class ShowDetailsViewModel : ViewModel() {
                 }
 
             })
+    }
+
+    fun fetchReviewsFromDatabase(showId: Int): LiveData<List<ReviewEntity>> {
+
+        return database.reviewDao().getAllReviews(showId)
     }
 
     private val _reviewAdd = MutableLiveData<Review>()
@@ -55,7 +87,7 @@ class ShowDetailsViewModel : ViewModel() {
     private val _singleShowLiveData = MutableLiveData<Show>()
     val singleShowLiveData: LiveData<Show> = _singleShowLiveData
 
-    fun fetchShow(showId: Int) {
+    fun fetchShowFromApi(showId: Int) {
         ApiModule.retrofit.fetchShow(showId)
             .enqueue(object : Callback<ShowResponse> {
                 override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
@@ -68,5 +100,9 @@ class ShowDetailsViewModel : ViewModel() {
                 }
 
             })
+    }
+
+    fun fetchShowFromDatabase(showId: Int): LiveData<ShowEntity> {
+        return database.showDao().getShow(showId)
     }
 }
