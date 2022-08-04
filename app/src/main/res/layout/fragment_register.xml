@@ -9,9 +9,9 @@
 
     <ImageView
         android:id="@+id/top_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/top_left_illustration"
+        android:layout_width="113dp"
+        android:layout_height="77dp"
+        android:src="@drawable/ic_top_left_illustration"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -19,7 +19,7 @@
         android:id="@+id/top_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/top_right_illustration"
+        android:src="@drawable/ic_top_right_illustration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
         android:layout_marginTop="90dp"
-        android:src="@drawable/triangle"
+        android:src="@drawable/ic_triangle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_left"/>
 
@@ -40,8 +40,8 @@
         android:layout_marginStart="19dp"
         android:layout_marginTop="85dp"
         android:text="@string/shows"
+        android:textStyle="bold"
         android:textColor="@color/white"
-        android:textFontWeight="700"
         android:textSize="34sp"
         app:layout_constraintStart_toEndOf="@id/triangle"
         app:layout_constraintTop_toBottomOf="@id/top_left"/>

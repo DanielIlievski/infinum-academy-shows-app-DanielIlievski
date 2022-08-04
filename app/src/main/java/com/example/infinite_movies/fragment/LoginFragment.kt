@@ -8,6 +8,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.BounceInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -23,6 +27,7 @@ import com.example.infinite_movies.databinding.FragmentLoginBinding
 import com.example.infinite_movies.model.LoginRequest
 import com.example.infinite_movies.model.LoginResponse
 import com.example.infinite_movies.networking.ApiModule
+import kotlinx.android.synthetic.main.fragment_login.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -86,6 +91,8 @@ class LoginFragment : Fragment() {
 
         initListeners()
 
+        initAnimations()
+
         val isRememberMeChecked = sharedPreferences.getBoolean(IS_CHECKED, false)
 
         if (args.registerFlag) {
@@ -100,6 +107,30 @@ class LoginFragment : Fragment() {
             val directions = LoginFragmentDirections.toWelcomeFragment(username = username, email = email)
 
             findNavController().navigate(directions)
+        }
+    }
+
+    private fun initAnimations() {
+        animateTriangleImageViewAndShowsTextView()
+    }
+
+    private fun animateTriangleImageViewAndShowsTextView(): ViewPropertyAnimator? = with(binding) {
+        triangle.translationY = -800f
+        showsText.alpha = 0f
+        showsText.scaleX = 0f
+        showsText.scaleY = 0f
+        triangle.animate().apply {
+            duration = 1000
+            translationY(0f)
+            interpolator = BounceInterpolator()
+        }.withEndAction {
+            showsText.animate().apply {
+                duration = 800
+                alpha(1f)
+                scaleX(1f)
+                scaleY(1f)
+                interpolator = OvershootInterpolator(4f)
+            }.start()
         }
     }
 
