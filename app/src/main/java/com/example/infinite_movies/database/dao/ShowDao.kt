@@ -19,6 +19,6 @@ interface ShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllShows(shows: List<ShowEntity>)
 
-//    @Query("SELECT * FROM show LIMIT 1")
-//    fun loadLastShow(): LiveData<ShowEntity>
+    @Query("SELECT * FROM show LIMIT 1")
+    fun loadLastShow(): LiveData<ShowEntity>
 }

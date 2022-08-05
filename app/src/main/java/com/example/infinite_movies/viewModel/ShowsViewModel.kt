@@ -82,10 +82,6 @@ class ShowsViewModel(
             })
     }
 
-//    fun isDbEmpty(): LiveData<ShowEntity> {
-//        return database.showDao().loadLastShow()
-//    }
-
     fun fetchShowsFromDatabase(): LiveData<List<ShowEntity>> {
 
         return database.showDao().getAllShows()

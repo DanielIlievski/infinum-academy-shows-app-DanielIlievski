@@ -25,6 +25,7 @@ import com.example.infinite_movies.R
 import com.example.infinite_movies.SessionManager
 import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.adapter.ShowsAdapter
+import com.example.infinite_movies.database.entity.ShowEntity
 import com.example.infinite_movies.databinding.DialogChangeProfilePhotoBinding
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
@@ -97,29 +98,28 @@ class ShowsFragment : Fragment() {
             viewModel.fetchShowsFromApi()
         } else {
             viewModel.fetchShowsFromDatabase().observe(viewLifecycleOwner) { showEntityList ->
-                showsAdapter.addAllItems(showEntityList.map { showEntity ->
-                    Show(
-                        showEntity.id,
-                        showEntity.avgRating,
-                        showEntity.description,
-                        showEntity.imgUrl,
-                        showEntity.numberOfReviews,
-                        showEntity.title
-                    )
-                })
+                if (showEntityList.isNotEmpty()) {
+                    showsAdapter.addAllItems(showEntityList.map { showEntity ->
+                        Show(
+                            showEntity.id,
+                            showEntity.avgRating,
+                            showEntity.description,
+                            showEntity.imgUrl,
+                            showEntity.numberOfReviews,
+                            showEntity.title
+                        )
+                    })
+                }
+                else {
+                    binding.showsRecycler.isVisible = false
+                    binding.emptyStateLayout.isVisible = true
+                }
             }
         }
-        //        else {
-        //            binding.showEmptyState.isVisible = false
-        //            binding.showsRecycler.isVisible = false
-        //            binding.emptyStateLayout.isVisible = true
-        //        }
 
         initListeners()
 
         initShowsRecycler()
-
-        initLoadShowsButton()
 
     }
 
@@ -248,19 +248,5 @@ class ShowsFragment : Fragment() {
         binding.showsRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         binding.showsRecycler.adapter = showsAdapter
-    }
-
-    private fun initLoadShowsButton() {
-        binding.showEmptyState.setOnClickListener {
-            if (binding.showsRecycler.isVisible) {
-                binding.showEmptyState.setText(R.string.load)
-                binding.showsRecycler.isVisible = false
-                binding.emptyStateLayout.isVisible = true
-            } else {
-                binding.showEmptyState.setText(R.string.hide)
-                binding.showsRecycler.isVisible = true
-                binding.emptyStateLayout.isVisible = false
-            }
-        }
     }
 }

@@ -13,9 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel(
-    private val database: ShowsDatabase
-) : ViewModel() {
+class RegisterViewModel : ViewModel() {
 
     private val registrationResultLiveData: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
 
