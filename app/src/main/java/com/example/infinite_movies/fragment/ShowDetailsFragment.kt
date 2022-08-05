@@ -80,7 +80,7 @@ class ShowDetailsFragment : Fragment() {
             binding.showDetailsCollapsingToolbar.title = title
             Glide.with(binding.root.context)
                 .load(imgUrl)
-                .placeholder(R.drawable.ic_progress_spinner_white)
+                .placeholder(R.drawable.progress_spinner_white_animantion)
                 .into(binding.collapseBarImage)
             binding.nestedScrollViewText.text = description
             binding.ratingBar.rating = show.avgRating!!
@@ -94,6 +94,10 @@ class ShowDetailsFragment : Fragment() {
 
         viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
             adapter.addReview(review)
+        }
+
+        viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
+            binding.progressBar.visibility = progressBar
         }
     }
 

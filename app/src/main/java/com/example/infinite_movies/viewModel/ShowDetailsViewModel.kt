@@ -1,5 +1,6 @@
 package com.example.infinite_movies.viewModel
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,12 +20,16 @@ class ShowDetailsViewModel : ViewModel() {
     private val _reviewsLiveData = MutableLiveData<List<Review>>()
     val reviewsLiveData: LiveData<List<Review>> = _reviewsLiveData
 
+    private val _progressBarLiveData = MutableLiveData<Int>(View.VISIBLE)
+    val progressBarLiveData: LiveData<Int> = _progressBarLiveData
+
     fun fetchReviews(showId: Int) {
         ApiModule.retrofit.fetchReviews(showId)
             .enqueue(object : Callback<ReviewsResponse> {
                 override fun onResponse(call: Call<ReviewsResponse>, response: Response<ReviewsResponse>) {
                     if (response.code() == 200) {
                         _reviewsLiveData.value = response.body()?.reviews
+                        _progressBarLiveData.value = View.GONE
                     }
                 }
 

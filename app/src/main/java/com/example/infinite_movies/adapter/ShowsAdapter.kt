@@ -1,9 +1,9 @@
 package com.example.infinite_movies.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.example.infinite_movies.R
 import com.example.infinite_movies.databinding.ViewShowItemBinding
@@ -37,7 +37,7 @@ class ShowsAdapter(
             Glide.with(binding.root.context)
                 .load(item.imgUrl)
                 .override(1400)
-                .placeholder(R.drawable.ic_progress_spinner)
+                .placeholder(R.drawable.progress_spinner_animation)
                 .into(binding.showImage)
             binding.showDescription.text = item.description
             binding.cardContainer.setOnClickListener {

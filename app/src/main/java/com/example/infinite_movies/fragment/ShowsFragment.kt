@@ -89,6 +89,10 @@ class ShowsFragment : Fragment() {
             adapter.addAllItems(showList)
         }
 
+        viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
+            binding.progressBar.visibility = progressBar
+        }
+
         viewModel.fetchShows()
 
         initListeners()
