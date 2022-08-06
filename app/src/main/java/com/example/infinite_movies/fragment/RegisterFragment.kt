@@ -1,6 +1,5 @@
 package com.example.infinite_movies.fragment
 
-import android.app.Application
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
