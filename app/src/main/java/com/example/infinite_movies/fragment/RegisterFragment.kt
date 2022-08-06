@@ -1,5 +1,6 @@
 package com.example.infinite_movies.fragment
 
+import android.app.Application
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -12,13 +13,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.infinite_movies.R
+import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.databinding.DialogRegistrationStateBinding
 import com.example.infinite_movies.databinding.FragmentRegisterBinding
+import com.example.infinite_movies.doPasswordsMatch
+import com.example.infinite_movies.isPasswordLongEnough
+import com.example.infinite_movies.isValidEmail
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.RegisterViewModel
+import com.example.infinite_movies.viewModelFactory.ShowsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
-
-private const val FIVE = 5
 
 class RegisterFragment : Fragment() {
 
@@ -26,25 +30,15 @@ class RegisterFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    private fun isPasswordLongEnough(password: String): Boolean {
-        return password.length > FIVE
-    }
-
-    private fun doPasswordsMatch(password: String, repeatPassword: String): Boolean {
-        return password.equals(repeatPassword)
-    }
-
     private fun isButtonEnabled(): Boolean {
         return isValidEmail(binding.emailTextField.editText?.text.toString()) &&
             isPasswordLongEnough(binding.passwordTextField.editText?.text.toString()) &&
             doPasswordsMatch(binding.passwordTextField.editText?.text.toString(), binding.repeatPasswordTextField.editText?.text.toString())
     }
 
-    private val viewModel by viewModels<RegisterViewModel>()
+    private val viewModel by viewModels<RegisterViewModel> {
+        ShowsViewModelFactory(requireContext(), (requireActivity().application as ShowApplication).showsDatabase)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

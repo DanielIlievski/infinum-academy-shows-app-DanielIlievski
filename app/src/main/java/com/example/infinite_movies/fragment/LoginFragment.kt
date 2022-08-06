@@ -9,33 +9,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.BounceInterpolator
 import android.view.animation.OvershootInterpolator
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.example.infinite_movies.EMAIL
+import com.example.infinite_movies.IS_CHECKED
+import com.example.infinite_movies.PASSWORD
 import com.example.infinite_movies.R
 import com.example.infinite_movies.SessionManager
 import com.example.infinite_movies.databinding.FragmentLoginBinding
-import com.example.infinite_movies.model.LoginRequest
-import com.example.infinite_movies.model.LoginResponse
+import com.example.infinite_movies.errorAlertDialog
+import com.example.infinite_movies.isPasswordLongEnough
+import com.example.infinite_movies.isValidEmail
 import com.example.infinite_movies.networking.ApiModule
-import kotlinx.android.synthetic.main.fragment_login.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
-private const val IS_CHECKED = "IS_CHECKED"
-private const val EMAIL = "EMAIL"
-private const val PASSWORD = "PASSWORD"
-private const val FIVE = 5
+import com.example.infinite_movies.viewModel.LoginViewModel
 
 class LoginFragment : Fragment() {
 
@@ -49,13 +44,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var sessionManager: SessionManager
 
-    private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    private fun isPasswordLongEnough(password: String): Boolean {
-        return password.length > FIVE
-    }
+    private val viewModel by viewModels<LoginViewModel>()
 
     private fun isButtonEnabled(): Boolean {
         return isValidEmail(binding.emailTextField.editText?.text.toString()) && isPasswordLongEnough(
@@ -147,44 +136,40 @@ class LoginFragment : Fragment() {
         }
 
         binding.loginButton.setOnClickListener {
-            // extract the characters before the @
-            val username = binding.emailTextField.editText?.text.toString()
-                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
 
             val email = binding.emailTextField.editText?.text.toString()
+            // extract the characters before the @
+            val username = email
+                .substring(0, email.indexOf('@'))
 
             val password = binding.passwordTextField.editText?.text.toString()
 
-            val loginRequest = LoginRequest(
-                email = email,
-                password = password
-            )
+            viewModel.accessTokenLiveData.observe(viewLifecycleOwner) { accessToken ->
+                sessionManager.saveAuthToken(accessToken)
+            }
 
-            ApiModule.retrofit.login(loginRequest)
-                .enqueue(object : Callback<LoginResponse> {
-                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                        val accessToken = response.headers()["access-token"].toString()
-                        val client = response.headers()["client"].toString()
-                        val uid = response.headers()["uid"].toString()
+            viewModel.clientLiveData.observe(viewLifecycleOwner) { client ->
+                sessionManager.saveClient(client)
+            }
 
-                        sessionManager.saveAuthToken(accessToken)
-                        sessionManager.saveClient(client)
-                        sessionManager.saveUid(uid)
+            viewModel.uidLiveData.observe(viewLifecycleOwner) { uid ->
+                sessionManager.saveUid(uid)
+            }
 
-                        if (response.code() == 201) {
-                            val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
+            viewModel.responseCodeLiveData.observe(viewLifecycleOwner) { responseCode ->
+                when (responseCode) {
+                    201 -> {
+                        val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
 
-                            findNavController().navigate(directions)
-                        } else if (response.code() == 401) {
-
-                            Toast.makeText(requireContext(), getString(R.string.invalid_login_credentials), Toast.LENGTH_SHORT).show()
-                        }
+                        findNavController().navigate(directions)
                     }
-
-                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    401 -> {
+                        errorAlertDialog(requireContext(), getString(R.string.invalid_login_credentials))
                     }
+                }
+            }
 
-                })
+            viewModel.login(email, password)
         }
 
         // disable and enable the Login button when email and password conditions are fulfilled

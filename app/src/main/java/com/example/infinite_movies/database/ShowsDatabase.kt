@@ -29,7 +29,7 @@ abstract class ShowsDatabase : RoomDatabase() {
         fun getDatabase(context: Context): ShowsDatabase {
 
             val tempInstance = INSTANCE
-            if(tempInstance != null)
+            if (tempInstance != null)
                 return tempInstance
 
             synchronized(this) {

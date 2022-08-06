@@ -19,12 +19,11 @@ import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.adapter.ReviewsAdapter
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
+import com.example.infinite_movies.isNetworkAvailable
 import com.example.infinite_movies.model.Review
 import com.example.infinite_movies.model.ReviewRequest
-import com.example.infinite_movies.model.User
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.ShowDetailsViewModel
-import com.example.infinite_movies.viewModel.ShowsViewModel
 import com.example.infinite_movies.viewModelFactory.ShowsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -39,7 +38,7 @@ class ShowDetailsFragment : Fragment() {
     private val args by navArgs<ShowDetailsFragmentArgs>()
 
     private val viewModel: ShowDetailsViewModel by viewModels {
-        ShowsViewModelFactory((requireActivity().application as ShowApplication).showsDatabase)
+        ShowsViewModelFactory(requireContext(), (requireActivity().application as ShowApplication).showsDatabase)
     }
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -73,7 +72,12 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initAssignValues() {
-        if (viewModel.isNetworkAvailable(requireContext())){
+
+        viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
+            binding.progressBar.visibility = progressBar
+        }
+
+        if (isNetworkAvailable(requireContext())) {
             viewModel.fetchShowFromApi(args.id)
 
             viewModel.fetchReviewsFromApi(args.id)
@@ -88,7 +92,7 @@ class ShowDetailsFragment : Fragment() {
                 binding.showDetailsCollapsingToolbar.title = title
                 Glide.with(binding.root.context)
                     .load(imgUrl)
-                    .placeholder(R.drawable.ic_progress_spinner_white)
+                    .placeholder(R.drawable.progress_spinner_white_animation)
                     .into(binding.collapseBarImage)
                 binding.nestedScrollViewText.text = description
                 binding.ratingBar.rating = show.avgRating!!
@@ -102,8 +106,7 @@ class ShowDetailsFragment : Fragment() {
             viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
                 reviewsAdapter.addReview(review)
             }
-        }
-        else {
+        } else {
             viewModel.fetchReviewsFromDatabase(args.id).observe(viewLifecycleOwner) { reviewEntityList ->
                 reviewsAdapter.addAllReviews(reviewEntityList.map { reviewEntity ->
                     Review(reviewEntity.id, reviewEntity.comment, reviewEntity.rating, reviewEntity.showId, reviewEntity.user)
@@ -120,7 +123,7 @@ class ShowDetailsFragment : Fragment() {
                 binding.showDetailsCollapsingToolbar.title = title
                 Glide.with(binding.root.context)
                     .load(imgUrl)
-                    .placeholder(R.drawable.ic_progress_spinner_white)
+                    .placeholder(R.drawable.progress_spinner_white_animation)
                     .into(binding.collapseBarImage)
                 binding.nestedScrollViewText.text = description
                 binding.ratingBar.rating = showEntity.avgRating!!

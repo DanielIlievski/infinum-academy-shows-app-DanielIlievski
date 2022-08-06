@@ -12,15 +12,15 @@ class AuthInterceptor(context: Context) : Interceptor {
         val requestBuilder = chain.request().newBuilder()
 
         sessionManager.fetchAuthToken()?.let { userToken ->
-            requestBuilder.addHeader(name = "access-token", value = userToken)
+            requestBuilder.addHeader(ACCESS_TOKEN, value = userToken)
         }
 
         sessionManager.fetchClient()?.let { client ->
-            requestBuilder.addHeader("client", client)
+            requestBuilder.addHeader(CLIENT, client)
         }
 
         sessionManager.fetchUid()?.let { uid ->
-            requestBuilder.addHeader("uid", uid)
+            requestBuilder.addHeader(UID, uid)
         }
 
         return chain.proceed(requestBuilder.build())

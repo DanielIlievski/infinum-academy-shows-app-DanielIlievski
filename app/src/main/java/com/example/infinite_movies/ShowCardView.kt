@@ -36,11 +36,11 @@ class ShowCardView @JvmOverloads constructor(
     }
 
     private fun setShowCardImage(imgUrl: String) = with(binding){
-        Glide.with(binding.root.context)
+        Glide.with(root.context)
             .load(imgUrl)
             .override(1400)
-            .placeholder(R.drawable.ic_progress_spinner)
-            .into(binding.showImage)
+            .placeholder(R.drawable.progress_spinner_animation)
+            .into(showImage)
     }
 
     private fun setShowCardDescription(showDescription: String) = with(binding){
