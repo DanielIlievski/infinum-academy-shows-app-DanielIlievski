@@ -1,5 +1,6 @@
 package com.example.infinite_movies.viewModel
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.infinite_movies.database.ShowsDatabase
 import com.example.infinite_movies.database.entity.ReviewEntity
 import com.example.infinite_movies.database.entity.ShowEntity
+import com.example.infinite_movies.errorAlertDialog
 import com.example.infinite_movies.model.Review
 import com.example.infinite_movies.model.ReviewRequest
 import com.example.infinite_movies.model.ReviewResponse
@@ -20,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ShowDetailsViewModel(
+    private val context: Context,
     private val database: ShowsDatabase
 ) : ViewModel() {
 
@@ -39,14 +42,22 @@ class ShowDetailsViewModel(
         ApiModule.retrofit.fetchReviews(showId)
             .enqueue(object : Callback<ReviewsResponse> {
                 override fun onResponse(call: Call<ReviewsResponse>, response: Response<ReviewsResponse>) {
-                    if (response.code() == 200) {
-                        _reviewsLiveData.value = response.body()?.reviews
-                        _progressBarLiveData.value = View.GONE
+                    when (response.code()) {
+                        200 -> {
+                            _reviewsLiveData.value = response.body()?.reviews
+                            _progressBarLiveData.value = View.GONE
 
-                        Executors.newSingleThreadExecutor().execute {
-                            reviewListToReviewEntityList(response.body()?.reviews)?.let { reviewEntityList ->
-                                database.reviewDao().insertAllReviews(reviewEntityList)
+                            Executors.newSingleThreadExecutor().execute {
+                                reviewListToReviewEntityList(response.body()?.reviews)?.let { reviewEntityList ->
+                                    database.reviewDao().insertAllReviews(reviewEntityList)
+                                }
                             }
+                        }
+                        401 -> {
+                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                        }
+                        404 -> {
+                            errorAlertDialog(context, "Couldn't find Show with 'id'=$showId")
                         }
                     }
                 }
@@ -69,8 +80,16 @@ class ShowDetailsViewModel(
         ApiModule.retrofit.createReview(reviewRequest)
             .enqueue(object : Callback<ReviewResponse> {
                 override fun onResponse(call: Call<ReviewResponse>, response: Response<ReviewResponse>) {
-                    if (response.code() == 201) {
-                        _reviewAdd.value = response.body()?.review
+                    when (response.code()) {
+                        200 -> {
+                            _reviewAdd.value = response.body()?.review
+                        }
+                        401 -> {
+                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                        }
+                        422 -> {
+                            errorAlertDialog(context, "Show must exist")
+                        }
                     }
                 }
 
@@ -87,8 +106,16 @@ class ShowDetailsViewModel(
         ApiModule.retrofit.fetchShow(showId)
             .enqueue(object : Callback<ShowResponse> {
                 override fun onResponse(call: Call<ShowResponse>, response: Response<ShowResponse>) {
-                    if (response.code() == 200) {
-                        _singleShowLiveData.value = response.body()?.show
+                    when (response.code()) {
+                        200 -> {
+                            _singleShowLiveData.value = response.body()?.show
+                        }
+                        401 -> {
+                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                        }
+                        404 -> {
+                            errorAlertDialog(context, "Couldn't find Show with 'id'=$showId")
+                        }
                     }
                 }
 

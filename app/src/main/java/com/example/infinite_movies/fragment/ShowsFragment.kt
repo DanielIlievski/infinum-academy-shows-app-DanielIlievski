@@ -50,7 +50,7 @@ class ShowsFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private val viewModel: ShowsViewModel by viewModels {
-        ShowsViewModelFactory((requireActivity().application as ShowApplication).showsDatabase)
+        ShowsViewModelFactory(requireContext(), (requireActivity().application as ShowApplication).showsDatabase)
     }
 
     private lateinit var profileSettingsBinding: DialogProfileSettingsBinding
