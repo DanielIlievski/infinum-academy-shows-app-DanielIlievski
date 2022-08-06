@@ -43,6 +43,16 @@
             android:textColor="@color/black"/>
     </androidx.appcompat.widget.Toolbar>
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:trackThickness="8dp"
+        android:visibility="gone"
+        app:trackColor="@color/white"
+        app:indicatorColor="@color/purple"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/showsRecycler"
         android:layout_width="match_parent"

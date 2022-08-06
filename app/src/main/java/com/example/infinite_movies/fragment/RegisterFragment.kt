@@ -14,29 +14,18 @@ import androidx.navigation.fragment.findNavController
 import com.example.infinite_movies.R
 import com.example.infinite_movies.databinding.DialogRegistrationStateBinding
 import com.example.infinite_movies.databinding.FragmentRegisterBinding
+import com.example.infinite_movies.doPasswordsMatch
+import com.example.infinite_movies.isPasswordLongEnough
+import com.example.infinite_movies.isValidEmail
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.RegisterViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
-
-private const val FIVE = 5
 
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
 
     private val binding get() = _binding!!
-
-    private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    private fun isPasswordLongEnough(password: String): Boolean {
-        return password.length > FIVE
-    }
-
-    private fun doPasswordsMatch(password: String, repeatPassword: String): Boolean {
-        return password.equals(repeatPassword)
-    }
 
     private fun isButtonEnabled(): Boolean {
         return isValidEmail(binding.emailTextField.editText?.text.toString()) &&

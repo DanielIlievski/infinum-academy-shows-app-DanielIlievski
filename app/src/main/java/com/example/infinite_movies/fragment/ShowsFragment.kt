@@ -21,14 +21,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.infinite_movies.BuildConfig
+import com.example.infinite_movies.PROFILE_PHOTO
 import com.example.infinite_movies.R
 import com.example.infinite_movies.SessionManager
 import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.adapter.ShowsAdapter
-import com.example.infinite_movies.database.entity.ShowEntity
 import com.example.infinite_movies.databinding.DialogChangeProfilePhotoBinding
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
+import com.example.infinite_movies.isNetworkAvailable
 import com.example.infinite_movies.model.Show
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.ShowsViewModel
@@ -87,11 +88,15 @@ class ShowsFragment : Fragment() {
 
         binding.profileSettingsButton.setImageResource(R.drawable.ic_review_profile)
 
-        val previewProfilePhoto = sharedPreferences.getString("PROFILE_PHOTO", "")?.toUri()
+        val previewProfilePhoto = sharedPreferences.getString(PROFILE_PHOTO, "")?.toUri()
         if (previewProfilePhoto.toString() != "")
             binding.profileSettingsButton.setImageURI(previewProfilePhoto)
 
-        if (viewModel.isNetworkAvailable(requireContext())) {
+        viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
+            binding.progressBar.visibility = progressBar
+        }
+
+        if (isNetworkAvailable(requireContext())) {
             viewModel.showsLiveData.observe(viewLifecycleOwner) { showList ->
                 showsAdapter.addAllItems(showList)
             }
@@ -109,8 +114,7 @@ class ShowsFragment : Fragment() {
                             showEntity.title
                         )
                     })
-                }
-                else {
+                } else {
                     binding.showsRecycler.isVisible = false
                     binding.emptyStateLayout.isVisible = true
                 }

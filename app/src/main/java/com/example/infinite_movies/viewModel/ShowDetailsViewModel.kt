@@ -1,8 +1,6 @@
 package com.example.infinite_movies.viewModel
 
-import android.content.Context
-import android.net.ConnectivityManager
-import androidx.core.content.ContextCompat
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +13,6 @@ import com.example.infinite_movies.model.ReviewResponse
 import com.example.infinite_movies.model.ReviewsResponse
 import com.example.infinite_movies.model.Show
 import com.example.infinite_movies.model.ShowResponse
-import com.example.infinite_movies.model.User
 import com.example.infinite_movies.networking.ApiModule
 import java.util.concurrent.Executors
 import retrofit2.Call
@@ -29,11 +26,8 @@ class ShowDetailsViewModel(
     private val _reviewsLiveData = MutableLiveData<List<Review>>()
     val reviewsLiveData: LiveData<List<Review>> = _reviewsLiveData
 
-    fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java)
-        val activeNetworkInfo = connectivityManager?.activeNetwork
-        return activeNetworkInfo != null
-    }
+    private val _progressBarLiveData = MutableLiveData(View.VISIBLE)
+    val progressBarLiveData: LiveData<Int> = _progressBarLiveData
 
     fun reviewListToReviewEntityList(reviewList: List<Review>?): List<ReviewEntity>? {
         return reviewList?.map { review ->
@@ -47,7 +41,9 @@ class ShowDetailsViewModel(
                 override fun onResponse(call: Call<ReviewsResponse>, response: Response<ReviewsResponse>) {
                     if (response.code() == 200) {
                         _reviewsLiveData.value = response.body()?.reviews
-                        Executors.newSingleThreadExecutor().execute() {
+                        _progressBarLiveData.value = View.GONE
+
+                        Executors.newSingleThreadExecutor().execute {
                             reviewListToReviewEntityList(response.body()?.reviews)?.let { reviewEntityList ->
                                 database.reviewDao().insertAllReviews(reviewEntityList)
                             }
