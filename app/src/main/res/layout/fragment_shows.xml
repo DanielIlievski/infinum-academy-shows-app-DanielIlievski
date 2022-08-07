@@ -107,7 +107,6 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/topRatedShowsButton"
             style="@style/CustomTopRatedShowsChipButton"
-            android:checked="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
