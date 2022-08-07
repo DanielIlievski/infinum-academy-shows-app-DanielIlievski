@@ -9,5 +9,20 @@
         <item name="cornerRadius">40dp</item>
     </style>
 
+    <style name="CustomTopRatedShowsChipButton" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:checkable">true</item>
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="chipStrokeColor">@color/purple</item>
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="chipIcon">@drawable/ic_heart_favorite</item>
+        <item name="chipIconTint">@color/chip_icon_color</item>
+        <item name="chipStartPadding">8dp</item>
+    </style>
+
 
 </resources>
