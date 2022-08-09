@@ -1,6 +1,5 @@
 package com.example.infinite_movies.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.infinite_movies.ShowCardView

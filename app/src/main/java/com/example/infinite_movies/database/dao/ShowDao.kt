@@ -13,6 +13,9 @@ interface ShowDao {
     @Query("SELECT * FROM show")
     fun getAllShows(): LiveData<List<ShowEntity>>
 
+    @Query("SELECT * FROM show")
+    fun getTopRatedShows(): LiveData<List<ShowEntity>>
+
     @Query("SELECT * FROM show WHERE id IS :showId")
     fun getShow(showId: Int): LiveData<ShowEntity>
 
@@ -20,5 +23,5 @@ interface ShowDao {
     fun insertAllShows(shows: List<ShowEntity>)
 
     @Query("SELECT * FROM show LIMIT 1")
-    fun loadLastShow(): LiveData<ShowEntity>
+    fun loadFirstShow(): LiveData<ShowEntity>
 }

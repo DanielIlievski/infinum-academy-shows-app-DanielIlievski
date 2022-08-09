@@ -49,4 +49,5 @@
     <string name="password_condition">Password must contain at least 6 characters!</string>
     <string name="invalid_login_credentials">Invalid login credentials. Please try again.</string>
     <string name="top_rated">Top rated</string>
+    <string name="scroll_to_top_button">Scroll to top button</string>
 </resources>

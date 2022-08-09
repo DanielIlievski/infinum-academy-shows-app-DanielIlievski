@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.infinite_movies.BuildConfig
@@ -96,6 +97,8 @@ class ShowsFragment : Fragment() {
             binding.progressBar.visibility = progressBar
         }
 
+        initShowsRecycler()
+
         if (isNetworkAvailable(requireContext())) {
             viewModel.showsLiveData.observe(viewLifecycleOwner) { showList ->
                 showsAdapter.addAllItems(showList)
@@ -122,9 +125,6 @@ class ShowsFragment : Fragment() {
         }
 
         initListeners()
-
-        initShowsRecycler()
-
     }
 
     override fun onDestroyView() {
@@ -137,6 +137,77 @@ class ShowsFragment : Fragment() {
         binding.profileSettingsButton.setOnClickListener {
             showProfileSettingsBottomSheet()
         }
+
+        binding.floatingToTopButton.setOnClickListener {
+            binding.showsRecycler.smoothScrollToPosition(0)
+        }
+
+        binding.showsRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy >= 0) {
+                    // Scroll Down
+                    binding.floatingToTopButton.visibility = View.GONE
+                } else if (dy < 0) {
+                    // Scroll Up
+                    binding.floatingToTopButton.visibility = View.VISIBLE
+                }
+            }
+        })
+
+        binding.topRatedShowsButton.setOnCheckedChangeListener { chip, isChecked ->
+            if (!isChecked) {
+                if (isNetworkAvailable(requireContext())) {
+                    viewModel.showsLiveData.observe(viewLifecycleOwner) { showList ->
+                        showsAdapter.addAllItems(showList)
+                    }
+                    viewModel.fetchShowsFromApi()
+                } else {
+                    viewModel.fetchShowsFromDatabase().observe(viewLifecycleOwner) { showEntityList ->
+                        if (showEntityList.isNotEmpty()) {
+                            showsAdapter.addAllItems(showEntityList.map { showEntity ->
+                                Show(
+                                    showEntity.id,
+                                    showEntity.avgRating,
+                                    showEntity.description,
+                                    showEntity.imgUrl,
+                                    showEntity.numberOfReviews,
+                                    showEntity.title
+                                )
+                            })
+                        } else {
+                            binding.showsRecycler.isVisible = false
+                            binding.emptyStateLayout.isVisible = true
+                        }
+                    }
+                }
+            } else {
+                if (isNetworkAvailable(requireContext())) {
+                    viewModel.showsLiveData.observe(viewLifecycleOwner) { showList ->
+                        showsAdapter.addAllItems(showList)
+                    }
+                    viewModel.fetchTopRatedShowsFromApi()
+                } else {
+                    viewModel.fetchTopRatedShowsFromDatabase().observe(viewLifecycleOwner) { showEntityList ->
+                        if (showEntityList.isNotEmpty()) {
+                            showsAdapter.addAllItems(showEntityList.map { showEntity ->
+                                Show(
+                                    showEntity.id,
+                                    showEntity.avgRating,
+                                    showEntity.description,
+                                    showEntity.imgUrl,
+                                    showEntity.numberOfReviews,
+                                    showEntity.title
+                                )
+                            })
+                        } else {
+                            binding.showsRecycler.isVisible = false
+                            binding.emptyStateLayout.isVisible = true
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun showProfileSettingsBottomSheet() {
@@ -145,11 +216,11 @@ class ShowsFragment : Fragment() {
         profileSettingsBinding = DialogProfileSettingsBinding.inflate(layoutInflater)
         dialog.setContentView(profileSettingsBinding.root)
 
-        profileSettingsBinding.previewProfilePhoto.setImageURI(sharedPreferences.getString("PROFILE_PHOTO", "")?.toUri())
+        profileSettingsBinding.previewProfilePhoto.setImageURI(sharedPreferences.getString(PROFILE_PHOTO, "")?.toUri())
         profileSettingsBinding.profileEmail.text = args.email
 
         profileSettingsBinding.removeProfilePhoto.setOnClickListener {
-            sharedPreferences.edit().remove("PROFILE_PHOTO").apply()
+            sharedPreferences.edit().remove(PROFILE_PHOTO).apply()
             binding.profileSettingsButton.setImageResource(R.drawable.ic_review_profile)
             dialog.dismiss()
         }
@@ -193,7 +264,7 @@ class ShowsFragment : Fragment() {
         if (isSuccess) {
             latestTmpUri?.let { uri ->
                 binding.profileSettingsButton.setImageURI(uri)
-                sharedPreferences.edit().putString("PROFILE_PHOTO", uri.toString()).apply()
+                sharedPreferences.edit().putString(PROFILE_PHOTO, uri.toString()).apply()
             }
         }
     }

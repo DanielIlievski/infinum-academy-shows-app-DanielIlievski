@@ -9,6 +9,7 @@ import com.example.infinite_movies.model.ReviewResponse
 import com.example.infinite_movies.model.ReviewsResponse
 import com.example.infinite_movies.model.ShowResponse
 import com.example.infinite_movies.model.ShowsResponse
+import com.example.infinite_movies.model.TopRatedShowsResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,6 +26,9 @@ interface ShowsApiService {
 
     @GET("/shows")
     fun fetchShows(): Call<ShowsResponse>
+
+    @GET("/shows/top_rated")
+    fun fetchTopRatedShows(): Call<TopRatedShowsResponse>
 
     @GET("/shows/{id}")
     fun fetchShow(@Path("id") showId: Int): Call<ShowResponse>

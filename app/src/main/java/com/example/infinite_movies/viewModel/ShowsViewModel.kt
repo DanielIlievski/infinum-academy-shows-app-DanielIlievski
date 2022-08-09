@@ -10,6 +10,7 @@ import com.example.infinite_movies.database.entity.ShowEntity
 import com.example.infinite_movies.errorAlertDialog
 import com.example.infinite_movies.model.Show
 import com.example.infinite_movies.model.ShowsResponse
+import com.example.infinite_movies.model.TopRatedShowsResponse
 import com.example.infinite_movies.networking.ApiModule
 import java.util.concurrent.Executors
 import retrofit2.Call
@@ -60,9 +61,41 @@ class ShowsViewModel(
             })
     }
 
+    fun fetchTopRatedShowsFromApi() {
+        ApiModule.retrofit.fetchTopRatedShows()
+            .enqueue(object : Callback<TopRatedShowsResponse> {
+                override fun onResponse(call: Call<TopRatedShowsResponse>, response: Response<TopRatedShowsResponse>) {
+                    when (response.code()) {
+                        200 -> {
+                            _showsLiveData.value = response.body()?.shows
+                            _progressBarLiveData.value = View.GONE
+                            // add the shows to DB
+                            Executors.newSingleThreadExecutor().execute {
+                                showListToShowEntityList(response.body()?.shows)?.let { showEntityList ->
+                                    database.showDao().insertAllShows(showEntityList)
+                                }
+                            }
+                        }
+                        401 -> {
+                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<TopRatedShowsResponse>, t: Throwable) {
+                }
+
+            })
+    }
+
     fun fetchShowsFromDatabase(): LiveData<List<ShowEntity>> {
 
         return database.showDao().getAllShows()
+    }
+
+    fun fetchTopRatedShowsFromDatabase(): LiveData<List<ShowEntity>> {
+
+        return database.showDao().getTopRatedShows()
     }
 
 
