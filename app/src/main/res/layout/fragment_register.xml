@@ -128,20 +128,36 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
-        android:id="@+id/rememberMeCheckBox"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/repeatPasswordTextField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextField"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:hint="@string/repeat_password"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/white"
+        app:boxStrokeErrorColor="@color/red_error"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/white"
+        app:errorContentDescription="Password should contain at least 6 characters!"
+        app:errorTextColor="@color/red_error"
+        app:hintTextColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginHorizontal="25dp"
-        android:buttonTint="@color/white"
-        android:text="@string/remember_me"
-        android:textColor="@color/white"
-        android:textSize="17sp"/>
+        app:layout_constraintTop_toBottomOf="@id/passwordTextField">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/white"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginButton"
+        android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -152,7 +168,7 @@
         android:clickable="true"
         android:backgroundTint="@color/grey_disabled"
         android:enabled="false"
-        android:text="@string/login"
+        android:text="@string/register"
         android:textColor="@color/white"
         android:textAllCaps="false"
         android:textFontWeight="900"
@@ -162,26 +178,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rememberMeCheckBox"/>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/registerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:backgroundTint="@color/purple"
-        android:enabled="true"
-        android:text="@string/register"
-        android:textColor="@color/white"
-        android:textAllCaps="false"
-        android:textFontWeight="900"
-        android:stateListAnimator="@null"
-        android:textSize="17sp"
-        app:cornerRadius="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"/>
+        app:layout_constraintTop_toBottomOf="@id/repeatPasswordTextField"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

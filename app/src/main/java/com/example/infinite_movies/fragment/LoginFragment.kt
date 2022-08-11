@@ -8,18 +8,26 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.example.infinite_movies.EMAIL
+import com.example.infinite_movies.IS_CHECKED
+import com.example.infinite_movies.PASSWORD
 import com.example.infinite_movies.R
+import com.example.infinite_movies.SessionManager
 import com.example.infinite_movies.databinding.FragmentLoginBinding
-
-private const val IS_CHECKED = "IS_CHECKED"
-private const val EMAIL = "EMAIL"
-private const val PASSWORD = "PASSWORD"
-private const val FIVE = 5
+import com.example.infinite_movies.isPasswordLongEnough
+import com.example.infinite_movies.isValidEmail
+import com.example.infinite_movies.networking.ApiModule
+import com.example.infinite_movies.viewModel.LoginViewModel
 
 class LoginFragment : Fragment() {
 
@@ -29,14 +37,11 @@ class LoginFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private fun isValidEmail(email: String): Boolean {
-        //return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
+    private val args by navArgs<LoginFragmentArgs>()
 
-    private fun isPasswordLongEnough(password: String): Boolean {
-        return password.length > FIVE
-    }
+    private lateinit var sessionManager: SessionManager
+
+    private val viewModel by viewModels<LoginViewModel>()
 
     private fun isButtonEnabled(): Boolean {
         return isValidEmail(binding.emailTextField.editText?.text.toString()) && isPasswordLongEnough(
@@ -56,6 +61,10 @@ class LoginFragment : Fragment() {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+
+        ApiModule.initRetrofit(requireContext())
+
+        sessionManager = SessionManager(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -69,6 +78,11 @@ class LoginFragment : Fragment() {
         initListeners()
 
         val isRememberMeChecked = sharedPreferences.getBoolean(IS_CHECKED, false)
+
+        if (args.registerFlag) {
+            binding.loginText.text = getString(R.string.registration_success)
+            binding.registerButton.isVisible = false
+        }
 
         if (isRememberMeChecked) {
             val email = sharedPreferences.getString(EMAIL, "example.email@gmail.com").toString()
@@ -86,16 +100,44 @@ class LoginFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.loginButton.setOnClickListener {
-            // extract the characters before the @
-            val username = binding.emailTextField.editText?.text.toString()
-                .substring(0, binding.emailTextField.editText?.text.toString().indexOf('@'))
-
-            val email = binding.emailTextField.editText?.text.toString()
-
-            val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
+        binding.registerButton.setOnClickListener {
+            val directions = LoginFragmentDirections.toRegisterFragment()
 
             findNavController().navigate(directions)
+        }
+
+        binding.loginButton.setOnClickListener {
+
+            val email = binding.emailTextField.editText?.text.toString()
+            // extract the characters before the @
+            val username = email
+                .substring(0, email.indexOf('@'))
+
+            val password = binding.passwordTextField.editText?.text.toString()
+
+            viewModel.accessTokenLiveData.observe(viewLifecycleOwner) { accessToken ->
+                sessionManager.saveAuthToken(accessToken)
+            }
+
+            viewModel.clientLiveData.observe(viewLifecycleOwner) { client ->
+                sessionManager.saveClient(client)
+            }
+
+            viewModel.uidLiveData.observe(viewLifecycleOwner) { uid ->
+                sessionManager.saveUid(uid)
+            }
+
+            viewModel.responseCodeLiveData.observe(viewLifecycleOwner) { responseCode ->
+                if (responseCode == 201) {
+                    val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
+
+                    findNavController().navigate(directions)
+                } else if (responseCode == 401) {
+                    Toast.makeText(requireContext(), getString(R.string.invalid_login_credentials), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            viewModel.login(email, password)
         }
 
         // disable and enable the Login button when email and password conditions are fulfilled
@@ -112,12 +154,12 @@ class LoginFragment : Fragment() {
                 if (isValidEmail(binding.emailTextField.editText?.text.toString()))
                     binding.emailTextField.error = null
                 else
-                    binding.emailTextField.error = getString(R.string.emailErrorMessage)
+                    binding.emailTextField.error = getString(R.string.invalid_email)
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(resources.getColor(R.color.purple_background))
+                    binding.loginButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                    binding.loginButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }
@@ -136,15 +178,15 @@ class LoginFragment : Fragment() {
                 if (isPasswordLongEnough(binding.passwordTextField.editText?.text.toString()))
                     binding.passwordTextField.error = null
                 else {
-                    binding.passwordTextField.error = getString(R.string.passwordErrorMessage)
+                    binding.passwordTextField.error = getString(R.string.password_condition)
                     // enables password visibility toggle button to be visible when having an error message
                     binding.passwordTextField.errorIconDrawable = null
                 }
                 if (binding.loginButton.isEnabled) {
                     binding.loginButton.setBackgroundColor(Color.WHITE)
-                    binding.loginButton.setTextColor(resources.getColor(R.color.purple_background))
+                    binding.loginButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_background))
                 } else {
-                    binding.loginButton.setBackgroundColor(resources.getColor(R.color.grey_disabled))
+                    binding.loginButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey_disabled))
                     binding.loginButton.setTextColor(Color.WHITE)
                 }
             }

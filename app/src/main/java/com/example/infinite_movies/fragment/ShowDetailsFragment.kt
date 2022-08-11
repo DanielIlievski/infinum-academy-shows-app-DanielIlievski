@@ -2,23 +2,24 @@ package com.example.infinite_movies.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.infinite_movies.R
 import com.example.infinite_movies.adapter.ReviewsAdapter
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
+import com.example.infinite_movies.model.ReviewRequest
+import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.ShowDetailsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -45,27 +46,17 @@ class ShowDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPreferences = requireContext().getSharedPreferences("Login", Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences(getString(R.string.login), Context.MODE_PRIVATE)
+
+        ApiModule.initRetrofit(requireContext())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviewsList ->
-            adapter.addAllReviews(reviewsList)
-        }
+        viewModel.fetchShow(args.id)
 
-        viewModel.ratingBarRating.observe(viewLifecycleOwner) { ratingBarRating ->
-            binding.ratingBar.rating = ratingBarRating
-        }
-
-        viewModel.ratingBarText.observe(viewLifecycleOwner) { ratingBarText ->
-            binding.ratingBarText.text = ratingBarText
-        }
-
-        viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
-            adapter.addReview(review)
-        }
+        viewModel.fetchReviews(args.id)
 
         initAssignValues()
 
@@ -79,15 +70,35 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initAssignValues() {
-        val title = args.showName
-        val imgResId = args.showImageResourceId
-        val description = args.showDescription
+        viewModel.singleShowLiveData.observe(viewLifecycleOwner) { show ->
+            val title = show.title
+            val imgUrl = show.imgUrl
+            val description = show.description
+            val avgRating = show.avgRating
+            val numberOfReviews = show.numberOfReviews
 
-        binding.showDetailsToolbar.title = title
-        binding.collapseBarImage.setImageResource(imgResId)
-        binding.nestedScrollViewText.text = description
+            binding.showDetailsCollapsingToolbar.title = title
+            Glide.with(binding.root.context)
+                .load(imgUrl)
+                .placeholder(R.drawable.progress_spinner_white_animantion)
+                .into(binding.collapseBarImage)
+            binding.nestedScrollViewText.text = description
+            binding.ratingBar.rating = show.avgRating!!
+            binding.ratingBarText.text = getString(R.string.ratingBarText, numberOfReviews, avgRating)
 
-        viewModel.addRatingBarStats()
+        }
+
+        viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviewsList ->
+            adapter.addAllReviews(reviewsList)
+        }
+
+        viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
+            adapter.addReview(review)
+        }
+
+        viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
+            binding.progressBar.visibility = progressBar
+        }
     }
 
     override fun onDestroyView() {
@@ -144,23 +155,12 @@ class ShowDetailsFragment : Fragment() {
         dialog.setContentView(bottomSheetBinding.root)
 
         bottomSheetBinding.submitButton.setOnClickListener {
-            val previewProfilePhoto = sharedPreferences.getString("PROFILE_PHOTO", "")!!.toUri()
-            if (sharedPreferences.getString("PROFILE_PHOTO", "").toString() != "") {
-                viewModel.addReviewToList(
-                    args.username,
-                    bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
-                    bottomSheetBinding.reviewRatingBar.rating.toInt(),
-                    previewProfilePhoto
-                )
-            }
-            else {
-                viewModel.addReviewToList(
-                    args.username,
-                    bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
-                    bottomSheetBinding.reviewRatingBar.rating.toInt(),
-                    Uri.parse("android.resource://com.example.infinite_movies/" + R.drawable.ic_review_profile)
-                )
-            }
+            val reviewRequest = ReviewRequest(
+                bottomSheetBinding.reviewRatingBar.rating.toInt(),
+                bottomSheetBinding.writeReviewTextField.editText?.text.toString(),
+                args.id
+            )
+            viewModel.createReview(reviewRequest)
             dialog.dismiss()
         }
 

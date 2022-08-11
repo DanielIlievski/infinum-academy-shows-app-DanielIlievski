@@ -23,7 +23,7 @@
     <string name="review_example">This show was a complete masterpiece</string>
     <string name="username">neil.the.navy.seal</string>
     <string name="no_reviews_yet">No reviews yet</string>
-    <string name="ratingBarText">%1$s reviews, %2$s average</string>
+    <string name="ratingBarText">%1$d reviews, %2$.2f average</string>
     <string name="comment">Comment</string>
     <string name="submit">Submit</string>
     <string name="profile_email">%s</string>
@@ -40,6 +40,12 @@
     <string name="pick_an_action">Pick an action</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
-    <string name="passwordErrorMessage">Password must contain at least 6 characters</string>
-    <string name="emailErrorMessage">Invalid email!</string>
+    <string name="register">Register</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="registration_success">Registration successful!</string>
+    <string name="registration_fail">Registration not successful!</string>
+    <string name="passwords_mismatch">Passwords do not match!</string>
+    <string name="invalid_email">Invalid email!</string>
+    <string name="password_condition">Password must contain at least 6 characters!</string>
+    <string name="invalid_login_credentials">Invalid login credentials. Please try again.</string>
 </resources>

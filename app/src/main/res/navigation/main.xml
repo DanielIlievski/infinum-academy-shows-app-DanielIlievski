@@ -13,6 +13,27 @@
         <action
             android:id="@+id/toWelcomeFragment"
             app:destination="@id/welcomeFragment"/>
+
+        <action
+            android:id="@+id/toRegisterFragment"
+            app:destination="@+id/registerFragment"/>
+
+        <argument
+            android:name="registerFlag"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.infinite_movies.fragment.RegisterFragment"
+        tools:layout="@layout/fragment_register">
+
+        <action
+            android:id="@+id/toLoginFragment"
+            app:destination="@+id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
@@ -75,16 +96,21 @@
             tools:layout="@layout/fragment_show_details">
 
             <argument
+                android:name="id"
+                app:argType="integer"/>
+
+            <argument
                 android:name="showName"
                 app:argType="string"/>
 
             <argument
                 android:name="showDescription"
-                app:argType="string"/>
+                app:argType="string"
+                app:nullable="true"/>
 
             <argument
-                android:name="showImageResourceId"
-                app:argType="integer"/>
+                android:name="showImageUrl"
+                app:argType="string"/>
 
             <argument
                 android:name="username"
