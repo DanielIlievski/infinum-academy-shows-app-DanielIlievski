@@ -29,6 +29,7 @@ import com.example.infinite_movies.adapter.ShowsAdapter
 import com.example.infinite_movies.databinding.DialogChangeProfilePhotoBinding
 import com.example.infinite_movies.databinding.DialogProfileSettingsBinding
 import com.example.infinite_movies.databinding.FragmentShowsBinding
+import com.example.infinite_movies.errorAlertDialog
 import com.example.infinite_movies.isNetworkAvailable
 import com.example.infinite_movies.model.Show
 import com.example.infinite_movies.networking.ApiModule
@@ -50,7 +51,7 @@ class ShowsFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     private val viewModel: ShowsViewModel by viewModels {
-        ShowsViewModelFactory(requireContext(), (requireActivity().application as ShowApplication).showsDatabase)
+        ShowsViewModelFactory((requireActivity().application as ShowApplication).showsDatabase)
     }
 
     private lateinit var profileSettingsBinding: DialogProfileSettingsBinding
@@ -86,6 +87,15 @@ class ShowsFragment : Fragment() {
 
         profileSettingsBinding = DialogProfileSettingsBinding.inflate(layoutInflater)
 
+        initAssignValues()
+
+        initListeners()
+
+        initShowsRecycler()
+
+    }
+
+    private fun initAssignValues() {
         binding.profileSettingsButton.setImageResource(R.drawable.ic_review_profile)
 
         val previewProfilePhoto = sharedPreferences.getString(PROFILE_PHOTO, "")?.toUri()
@@ -94,6 +104,10 @@ class ShowsFragment : Fragment() {
 
         viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
             binding.progressBar.visibility = progressBar
+        }
+
+        viewModel.errorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            errorAlertDialog(requireContext(), errorMessage)
         }
 
         if (isNetworkAvailable(requireContext())) {
@@ -120,11 +134,6 @@ class ShowsFragment : Fragment() {
                 }
             }
         }
-
-        initListeners()
-
-        initShowsRecycler()
-
     }
 
     override fun onDestroyView() {

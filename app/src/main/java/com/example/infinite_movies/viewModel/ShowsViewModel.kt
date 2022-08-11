@@ -17,7 +17,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ShowsViewModel(
-    private val context: Context,
+//    private val context: Context,
     private val database: ShowsDatabase
 ) : ViewModel() {
 
@@ -26,6 +26,9 @@ class ShowsViewModel(
 
     private val _progressBarLiveData = MutableLiveData<Int>(View.VISIBLE)
     val progressBarLiveData: LiveData<Int> = _progressBarLiveData
+
+    private val _errorLiveData = MutableLiveData<String>()
+    val errorLiveData: LiveData<String> = _errorLiveData
 
     fun showListToShowEntityList(showList: List<Show>?): List<ShowEntity>? {
         return showList?.map { show ->
@@ -49,7 +52,7 @@ class ShowsViewModel(
                             }
                         }
                         401 -> {
-                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                            _errorLiveData.value = "You need to sign in or sign up before continuing."
                         }
                     }
                 }

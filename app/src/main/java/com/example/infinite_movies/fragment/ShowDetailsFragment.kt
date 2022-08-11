@@ -19,6 +19,7 @@ import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.adapter.ReviewsAdapter
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
+import com.example.infinite_movies.errorAlertDialog
 import com.example.infinite_movies.isNetworkAvailable
 import com.example.infinite_movies.model.Review
 import com.example.infinite_movies.model.ReviewRequest
@@ -38,7 +39,7 @@ class ShowDetailsFragment : Fragment() {
     private val args by navArgs<ShowDetailsFragmentArgs>()
 
     private val viewModel: ShowDetailsViewModel by viewModels {
-        ShowsViewModelFactory(requireContext(), (requireActivity().application as ShowApplication).showsDatabase)
+        ShowsViewModelFactory((requireActivity().application as ShowApplication).showsDatabase)
     }
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -75,6 +76,10 @@ class ShowDetailsFragment : Fragment() {
 
         viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
             binding.progressBar.visibility = progressBar
+        }
+
+        viewModel.errorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            errorAlertDialog(requireContext(), errorMessage)
         }
 
         if (isNetworkAvailable(requireContext())) {

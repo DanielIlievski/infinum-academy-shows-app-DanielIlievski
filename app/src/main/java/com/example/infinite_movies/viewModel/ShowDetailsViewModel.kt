@@ -22,7 +22,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ShowDetailsViewModel(
-    private val context: Context,
     private val database: ShowsDatabase
 ) : ViewModel() {
 
@@ -31,6 +30,9 @@ class ShowDetailsViewModel(
 
     private val _progressBarLiveData = MutableLiveData(View.VISIBLE)
     val progressBarLiveData: LiveData<Int> = _progressBarLiveData
+
+    private val _errorLiveData = MutableLiveData<String>()
+    val errorLiveData: LiveData<String> = _errorLiveData
 
     fun reviewListToReviewEntityList(reviewList: List<Review>?): List<ReviewEntity>? {
         return reviewList?.map { review ->
@@ -54,10 +56,10 @@ class ShowDetailsViewModel(
                             }
                         }
                         401 -> {
-                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                            _errorLiveData.value = "You need to sign in or sign up before continuing."
                         }
                         404 -> {
-                            errorAlertDialog(context, "Couldn't find Show with 'id'=$showId")
+                            _errorLiveData.value = "Couldn't find Show with 'id'=$showId"
                         }
                     }
                 }
@@ -85,10 +87,10 @@ class ShowDetailsViewModel(
                             _reviewAdd.value = response.body()?.review
                         }
                         401 -> {
-                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                            _errorLiveData.value = "You need to sign in or sign up before continuing."
                         }
                         422 -> {
-                            errorAlertDialog(context, "Show must exist")
+                            _errorLiveData.value = "Show must exist"
                         }
                     }
                 }
@@ -111,10 +113,10 @@ class ShowDetailsViewModel(
                             _singleShowLiveData.value = response.body()?.show
                         }
                         401 -> {
-                            errorAlertDialog(context, "You need to sign in or sign up before continuing.")
+                            _errorLiveData.value = "You need to sign in or sign up before continuing."
                         }
                         404 -> {
-                            errorAlertDialog(context, "Couldn't find Show with 'id'=$showId")
+                            _errorLiveData.value = "Couldn't find Show with 'id'=$showId"
                         }
                     }
                 }
