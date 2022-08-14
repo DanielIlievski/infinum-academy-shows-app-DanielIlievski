@@ -3,7 +3,6 @@ package com.example.infinite_movies.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.example.infinite_movies.R
 import com.example.infinite_movies.databinding.ViewShowItemBinding

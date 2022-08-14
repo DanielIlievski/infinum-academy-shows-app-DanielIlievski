@@ -1,16 +1,11 @@
 package com.example.infinite_movies.viewModel
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.example.infinite_movies.ACCESS_TOKEN
 import com.example.infinite_movies.CLIENT
-import com.example.infinite_movies.R
 import com.example.infinite_movies.UID
-import com.example.infinite_movies.fragment.LoginFragment
-import com.example.infinite_movies.fragment.LoginFragmentDirections
 import com.example.infinite_movies.model.LoginRequest
 import com.example.infinite_movies.model.LoginResponse
 import com.example.infinite_movies.networking.ApiModule
@@ -18,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel : ViewModel() {
 
     private val _accessTokenLiveData = MutableLiveData<String>()
     val accessTokenLiveData: LiveData<String> = _accessTokenLiveData

@@ -18,6 +18,9 @@ class RegisterViewModel : ViewModel() {
         return registrationResultLiveData
     }
 
+    private val _errorLiveData = MutableLiveData<String>()
+    val errorLiveData: LiveData<String> = _errorLiveData
+
     fun onRegisterButtonClicked(username: String, password: String) {
 
         val registerRequest = RegisterRequest(
@@ -28,7 +31,14 @@ class RegisterViewModel : ViewModel() {
         ApiModule.retrofit.register(registerRequest)
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
-                    registrationResultLiveData.value = response.isSuccessful
+                    when (response.code()) {
+                        200 -> {
+                            registrationResultLiveData.value = response.isSuccessful
+                        }
+                        422 -> {
+                            _errorLiveData.value = "Please submit proper account update data in request body."
+                        }
+                    }
                 }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {

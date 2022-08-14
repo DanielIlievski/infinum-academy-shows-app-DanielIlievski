@@ -24,6 +24,7 @@ import com.example.infinite_movies.PASSWORD
 import com.example.infinite_movies.R
 import com.example.infinite_movies.SessionManager
 import com.example.infinite_movies.databinding.FragmentLoginBinding
+import com.example.infinite_movies.errorAlertDialog
 import com.example.infinite_movies.isPasswordLongEnough
 import com.example.infinite_movies.isValidEmail
 import com.example.infinite_movies.networking.ApiModule
@@ -128,12 +129,15 @@ class LoginFragment : Fragment() {
             }
 
             viewModel.responseCodeLiveData.observe(viewLifecycleOwner) { responseCode ->
-                if (responseCode == 201) {
-                    val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
+                when (responseCode) {
+                    201 -> {
+                        val directions = LoginFragmentDirections.toWelcomeFragment(username, email)
 
-                    findNavController().navigate(directions)
-                } else if (responseCode == 401) {
-                    Toast.makeText(requireContext(), getString(R.string.invalid_login_credentials), Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(directions)
+                    }
+                    401 -> {
+                        errorAlertDialog(requireContext(), getString(R.string.invalid_login_credentials))
+                    }
                 }
             }
 

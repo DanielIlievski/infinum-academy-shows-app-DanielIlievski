@@ -15,12 +15,17 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.infinite_movies.R
+import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.adapter.ReviewsAdapter
 import com.example.infinite_movies.databinding.DialogAddReviewBinding
 import com.example.infinite_movies.databinding.FragmentShowDetailsBinding
+import com.example.infinite_movies.errorAlertDialog
+import com.example.infinite_movies.isNetworkAvailable
+import com.example.infinite_movies.model.Review
 import com.example.infinite_movies.model.ReviewRequest
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.ShowDetailsViewModel
+import com.example.infinite_movies.viewModelFactory.ShowsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ShowDetailsFragment : Fragment() {
@@ -29,11 +34,13 @@ class ShowDetailsFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private lateinit var adapter: ReviewsAdapter
+    private lateinit var reviewsAdapter: ReviewsAdapter
 
     private val args by navArgs<ShowDetailsFragmentArgs>()
 
-    private val viewModel by viewModels<ShowDetailsViewModel>()
+    private val viewModel: ShowDetailsViewModel by viewModels {
+        ShowsViewModelFactory((requireActivity().application as ShowApplication).showsDatabase)
+    }
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -54,10 +61,6 @@ class ShowDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.fetchShow(args.id)
-
-        viewModel.fetchReviews(args.id)
-
         initAssignValues()
 
         initListeners()
@@ -70,35 +73,69 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initAssignValues() {
-        viewModel.singleShowLiveData.observe(viewLifecycleOwner) { show ->
-            val title = show.title
-            val imgUrl = show.imgUrl
-            val description = show.description
-            val avgRating = show.avgRating
-            val numberOfReviews = show.numberOfReviews
-
-            binding.showDetailsCollapsingToolbar.title = title
-            Glide.with(binding.root.context)
-                .load(imgUrl)
-                .placeholder(R.drawable.progress_spinner_white_animantion)
-                .into(binding.collapseBarImage)
-            binding.nestedScrollViewText.text = description
-            binding.ratingBar.rating = show.avgRating!!
-            binding.ratingBarText.text = getString(R.string.ratingBarText, numberOfReviews, avgRating)
-
-        }
-
-        viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviewsList ->
-            adapter.addAllReviews(reviewsList)
-        }
-
-        viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
-            adapter.addReview(review)
-        }
 
         viewModel.progressBarLiveData.observe(viewLifecycleOwner) { progressBar ->
             binding.progressBar.visibility = progressBar
         }
+
+        viewModel.errorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            errorAlertDialog(requireContext(), errorMessage)
+        }
+
+        if (isNetworkAvailable(requireContext())) {
+            viewModel.fetchShowFromApi(args.id)
+
+            viewModel.fetchReviewsFromApi(args.id)
+
+            viewModel.singleShowLiveData.observe(viewLifecycleOwner) { show ->
+                val title = show.title
+                val imgUrl = show.imgUrl
+                val description = show.description
+                val avgRating = show.avgRating
+                val numberOfReviews = show.numberOfReviews
+
+                binding.showDetailsCollapsingToolbar.title = title
+                Glide.with(binding.root.context)
+                    .load(imgUrl)
+                    .placeholder(R.drawable.progress_spinner_white_animation)
+                    .into(binding.collapseBarImage)
+                binding.nestedScrollViewText.text = description
+                binding.ratingBar.rating = show.avgRating!!
+                binding.ratingBarText.text = getString(R.string.ratingBarText, numberOfReviews, avgRating)
+            }
+
+            viewModel.reviewsLiveData.observe(viewLifecycleOwner) { reviewsList ->
+                reviewsAdapter.addAllReviews(reviewsList)
+            }
+
+            viewModel.reviewAdd.observe(viewLifecycleOwner) { review ->
+                reviewsAdapter.addReview(review)
+            }
+        } else {
+            viewModel.fetchReviewsFromDatabase(args.id).observe(viewLifecycleOwner) { reviewEntityList ->
+                reviewsAdapter.addAllReviews(reviewEntityList.map { reviewEntity ->
+                    Review(reviewEntity.id, reviewEntity.comment, reviewEntity.rating, reviewEntity.showId, reviewEntity.user)
+                })
+            }
+
+            viewModel.fetchShowFromDatabase(args.id).observe(viewLifecycleOwner) { showEntity ->
+                val title = showEntity.title
+                val imgUrl = showEntity.imgUrl
+                val description = showEntity.description
+                val avgRating = showEntity.avgRating
+                val numberOfReviews = showEntity.numberOfReviews
+
+                binding.showDetailsCollapsingToolbar.title = title
+                Glide.with(binding.root.context)
+                    .load(imgUrl)
+                    .placeholder(R.drawable.progress_spinner_white_animation)
+                    .into(binding.collapseBarImage)
+                binding.nestedScrollViewText.text = description
+                binding.ratingBar.rating = showEntity.avgRating!!
+                binding.ratingBarText.text = getString(R.string.ratingBarText, numberOfReviews, avgRating)
+            }
+        }
+
     }
 
     override fun onDestroyView() {
@@ -114,12 +151,12 @@ class ShowDetailsFragment : Fragment() {
     }
 
     private fun initReviewsRecycler() {
-        adapter = ReviewsAdapter(emptyList())
+        reviewsAdapter = ReviewsAdapter(emptyList())
 
         binding.reviewsRecycler.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        binding.reviewsRecycler.adapter = adapter
+        binding.reviewsRecycler.adapter = reviewsAdapter
 
         binding.reviewsRecycler.addItemDecoration(
             DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)

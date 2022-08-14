@@ -11,17 +11,16 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.infinite_movies.FIVE
 import com.example.infinite_movies.R
 import com.example.infinite_movies.databinding.DialogRegistrationStateBinding
 import com.example.infinite_movies.databinding.FragmentRegisterBinding
 import com.example.infinite_movies.doPasswordsMatch
+import com.example.infinite_movies.errorAlertDialog
 import com.example.infinite_movies.isPasswordLongEnough
 import com.example.infinite_movies.isValidEmail
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.RegisterViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
-
 
 class RegisterFragment : Fragment() {
 
@@ -47,7 +46,7 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -56,7 +55,15 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initAssignValues()
+
         initListeners()
+    }
+
+    private fun initAssignValues() {
+        viewModel.errorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            errorAlertDialog(requireContext(), errorMessage)
+        }
     }
 
     override fun onDestroyView() {
