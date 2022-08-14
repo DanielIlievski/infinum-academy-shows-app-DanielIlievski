@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.infinite_movies.R
-import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.databinding.DialogRegistrationStateBinding
 import com.example.infinite_movies.databinding.FragmentRegisterBinding
 import com.example.infinite_movies.doPasswordsMatch
@@ -21,7 +20,6 @@ import com.example.infinite_movies.isPasswordLongEnough
 import com.example.infinite_movies.isValidEmail
 import com.example.infinite_movies.networking.ApiModule
 import com.example.infinite_movies.viewModel.RegisterViewModel
-import com.example.infinite_movies.viewModelFactory.ShowsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class RegisterFragment : Fragment() {
@@ -36,9 +34,7 @@ class RegisterFragment : Fragment() {
             doPasswordsMatch(binding.passwordTextField.editText?.text.toString(), binding.repeatPasswordTextField.editText?.text.toString())
     }
 
-    private val viewModel by viewModels<RegisterViewModel> {
-        ShowsViewModelFactory(requireContext(), (requireActivity().application as ShowApplication).showsDatabase)
-    }
+    private val viewModel by viewModels<RegisterViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
