@@ -4,8 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.findNavController
-import com.example.infinite_movies.fragment.ShowsFragmentDirections
 
 fun isPasswordLongEnough(password: String): Boolean {
     return password.length > FIVE

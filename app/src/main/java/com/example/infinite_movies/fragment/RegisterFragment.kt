@@ -16,6 +16,7 @@ import com.example.infinite_movies.ShowApplication
 import com.example.infinite_movies.databinding.DialogRegistrationStateBinding
 import com.example.infinite_movies.databinding.FragmentRegisterBinding
 import com.example.infinite_movies.doPasswordsMatch
+import com.example.infinite_movies.errorAlertDialog
 import com.example.infinite_movies.isPasswordLongEnough
 import com.example.infinite_movies.isValidEmail
 import com.example.infinite_movies.networking.ApiModule
@@ -49,7 +50,7 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -58,7 +59,15 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initAssignValues()
+
         initListeners()
+    }
+
+    private fun initAssignValues() {
+        viewModel.errorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            errorAlertDialog(requireContext(), errorMessage)
+        }
     }
 
     override fun onDestroyView() {

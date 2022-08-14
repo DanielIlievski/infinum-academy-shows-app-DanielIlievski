@@ -4,7 +4,7 @@ import android.content.Context
 
 class SessionManager(context: Context) {
 
-    private val sharedPreferences = context.getSharedPreferences("Login", Context.MODE_PRIVATE)
+    private val sharedPreferences = context.getSharedPreferences(LOGIN, Context.MODE_PRIVATE)
 
     fun saveAuthToken(token: String) {
         sharedPreferences
