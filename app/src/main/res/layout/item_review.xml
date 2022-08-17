@@ -21,7 +21,10 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/review_rating_profile"
                 android:layout_width="340dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profilePhoto"

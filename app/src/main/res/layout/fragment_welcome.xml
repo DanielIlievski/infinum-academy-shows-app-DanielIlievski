@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="131dp"
         android:layout_marginEnd="131dp"
-        android:src="@drawable/welcome_icon"
+        android:src="@drawable/ic_welcome_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

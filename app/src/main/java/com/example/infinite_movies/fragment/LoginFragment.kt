@@ -8,7 +8,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.ViewPropertyAnimator
+import android.view.animation.BounceInterpolator
+import android.view.animation.OvershootInterpolator
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.view.isVisible
@@ -78,6 +80,8 @@ class LoginFragment : Fragment() {
 
         initListeners()
 
+        initAnimations()
+
         val isRememberMeChecked = sharedPreferences.getBoolean(IS_CHECKED, false)
 
         if (args.registerFlag) {
@@ -92,6 +96,30 @@ class LoginFragment : Fragment() {
             val directions = LoginFragmentDirections.toWelcomeFragment(username = username, email = email)
 
             findNavController().navigate(directions)
+        }
+    }
+
+    private fun initAnimations() {
+        animateTriangleImageViewAndShowsTextView()
+    }
+
+    private fun animateTriangleImageViewAndShowsTextView(): ViewPropertyAnimator? = with(binding) {
+        triangle.translationY = -800f
+        showsText.alpha = 0f
+        showsText.scaleX = 0f
+        showsText.scaleY = 0f
+        triangle.animate().apply {
+            duration = 1000
+            translationY(0f)
+            interpolator = BounceInterpolator()
+        }.withEndAction {
+            showsText.animate().apply {
+                duration = 800
+                alpha(1f)
+                scaleX(1f)
+                scaleY(1f)
+                interpolator = OvershootInterpolator(4f)
+            }.start()
         }
     }
 

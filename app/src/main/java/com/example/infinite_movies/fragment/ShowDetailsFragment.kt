@@ -94,6 +94,8 @@ class ShowDetailsFragment : Fragment() {
                 val avgRating = show.avgRating
                 val numberOfReviews = show.numberOfReviews
 
+                binding.reviews.text = getString(R.string.reviews)
+                binding.ratingBar.visibility = View.VISIBLE
                 binding.showDetailsCollapsingToolbar.title = title
                 Glide.with(binding.root.context)
                     .load(imgUrl)

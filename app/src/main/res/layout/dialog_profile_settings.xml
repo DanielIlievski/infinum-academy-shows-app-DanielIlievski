@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -25,6 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/previewProfilePhoto"
             android:layout_width="95dp"
@@ -41,13 +41,13 @@
             android:id="@+id/removeProfilePhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_x_delete"
             android:layout_gravity="top|end"
-            app:tint="?attr/colorPrimary"
+            android:src="@drawable/ic_x_delete"
             android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"/>
+            android:foreground="?attr/selectableItemBackground"
+            app:tint="?attr/colorPrimary"/>
 
     </FrameLayout>
 
@@ -73,7 +73,6 @@
         android:paddingVertical="10dp"
         android:clickable="true"
         android:backgroundTint="@color/white"
-        app:icon="@drawable/ic_edit_pencil"
         android:textFontWeight="700"
         android:textSize="17sp"
         android:textColor="?attr/colorPrimary"
@@ -82,22 +81,18 @@
         android:focusable="true"
         app:background="?attr/selectableItemBackground"
         app:cornerRadius="40dp"
+        app:icon="@drawable/ic_edit_pencil"
         app:strokeColor="?attr/colorPrimary"
         app:strokeWidth="2dp"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logout_button"
+        style="@style/CustomMaterialButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="17dp"
-        android:paddingVertical="10dp"
-        android:clickable="true"
         android:text="@string/logout"
-        android:textAllCaps="false"
-        android:textStyle="bold"
-        android:focusable="true"
-        app:background="?attr/selectableItemBackground"
-        app:cornerRadius="40dp"/>
+        />
 
 </LinearLayout>

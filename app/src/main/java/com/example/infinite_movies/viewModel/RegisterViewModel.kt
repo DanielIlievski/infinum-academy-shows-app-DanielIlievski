@@ -32,7 +32,7 @@ class RegisterViewModel : ViewModel() {
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                     when (response.code()) {
-                        200 -> {
+                        201 -> {
                             registrationResultLiveData.value = response.isSuccessful
                         }
                         422 -> {
